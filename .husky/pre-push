@@ -20,7 +20,7 @@
 # with "WIP" (work in progress).
 
 local_branch="$(git rev-parse --abbrev-ref HEAD)"
-valid_chars="^(dimitar|kostadin)\/[0-9]+\/((fix|feat)\/[a-zA-Z0-9\_]+)$"
+valid_chars="^(dimitar|kostadin)\/[0-9]+\/((feat|wip|bug|junk)\/[a-zA-Z0-9\_]+)$"
 message='...'
 
 if [[ ! $local_branch =~ $valid_chars ]]
