@@ -2,6 +2,10 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
+  resolve: {
+    extensions: [".ts", ".js", "*"],
+    modules: [path.resolve(__dirname, "src"), "node_modules"],
+  },
   output: {
     path: path.join(__dirname, "/dist"), // the bundle output path
     filename: "bundle.js", // the name of the bundle
