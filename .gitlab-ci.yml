@@ -1,4 +1,4 @@
-image: node:10
+image: node:18
 
 cache:
   paths:
@@ -24,4 +24,4 @@ pages:
       - public # only allow paths in project root directory for some reason
   only:
     refs:
-      - develop # deploy contents in master branch
+      - develop # deploy contents in branch
