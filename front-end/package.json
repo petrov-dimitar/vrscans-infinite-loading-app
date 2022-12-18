@@ -8,7 +8,6 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky install",
     "serve": "webpack serve --mode development",
     "build": "webpack --mode production"
   },
@@ -38,7 +37,6 @@
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-react": "^7.31.11",
     "html-webpack-plugin": "^5.5.0",
-    "husky": "^8.0.0",
     "prettier": "2.8.1",
     "sass": "^1.56.2",
     "sass-loader": "^13.2.0",
