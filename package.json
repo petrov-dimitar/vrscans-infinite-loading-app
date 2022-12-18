@@ -22,7 +22,7 @@
   "bugs": {
     "url": "https://gitlab.com/DimitarP/lazy-loading-vrscans-library/issues"
   },
-  "homepage": "https://gitlab.com/DimitarP/lazy-loading-vrscans-library#readme",
+  "homepage": "https://gitlab.com/DimitarP/lazy-loading-vrscans-library",
   "devDependencies": {
     "@babel/core": "^7.20.5",
     "@babel/preset-env": "^7.20.2",

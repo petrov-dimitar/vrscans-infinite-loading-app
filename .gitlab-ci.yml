@@ -1,0 +1,27 @@
+image: node:18
+
+cache:
+  paths:
+    - ./node_modules/
+
+before_script:
+  - rm -rf dist # remove the existing build
+  - CI=false npm install # install required packages
+
+pages:
+  stage: deploy
+  environment: Production
+  script:
+    - CI=false npm run build # build the React app, set CI=false because CI=true treats all warnings as errors
+    - cp dist/index.html dist/404.html # reroute to index
+    - ls
+    - mkdir public # make public directory in root for deployment due to artifact path only allowing /public
+    - ls
+    - mv ./dist/* public # move build contents to new /public directory
+    - export
+  artifacts:
+    paths:
+      - public # only allow paths in project root directory for some reason
+  only:
+    refs:
+      - develop # deploy contents in branch
