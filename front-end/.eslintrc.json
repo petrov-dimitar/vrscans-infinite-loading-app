@@ -4,11 +4,15 @@
     "es2021": true
   },
   "extends": ["plugin:react/recommended", "standard-with-typescript", "prettier"],
+  "parser": "@typescript-eslint/parser",
   "overrides": [],
   "parserOptions": {
+    "project": ["./tsconfig.json"],
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react"],
-  "rules": {}
+  "plugins": ["react", "@typescript-eslint"],
+  "rules": {
+    "@typescript-eslint/explicit-function-return-type": 0
+  }
 }

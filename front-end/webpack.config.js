@@ -5,8 +5,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = {
+  entry: './src/index.tsx',
   resolve: {
-    extensions: ['.ts', '.js', '*'],
+    extensions: ['.js', '.jsx', '.json', '.ts', '.tsx', '*'],
     modules: [path.resolve(__dirname, 'src'), 'node_modules']
   },
   output: {
@@ -34,7 +35,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/, // .js and .jsx files
+        test: /\.(js|jsx|tsx|ts)$/, // .js and .jsx files
         exclude: /node_modules/, // excluding the node_modules folder
         use: {
           loader: 'babel-loader'
