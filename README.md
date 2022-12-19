@@ -2,6 +2,10 @@
 
 # Lazy-loading VRScans Library
 
+## Links
+
+deployed front-end app: [https://dimitarp.gitlab.io/lazy-loading-vrscans-library/](https://dimitarp.gitlab.io/lazy-loading-vrscans-library/)
+
 ## husky
 
 In order to ensure branch and commit messages are following the naming conventions, we use husky with commit-msg and pre-push git hooks.
