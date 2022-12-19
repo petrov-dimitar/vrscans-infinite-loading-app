@@ -1,7 +1,11 @@
 import React from 'react';
 
 const App = () => {
-  return <h1>Hello React 01</h1>;
+  return (
+    <div>
+      <h1>Hello React with TSX</h1>
+    </div>
+  );
 };
 
 export default App;
