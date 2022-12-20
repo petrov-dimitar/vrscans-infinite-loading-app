@@ -24,3 +24,15 @@ pages:
   only:
     refs:
       - develop # deploy contents in target branch
+
+herokuBE: 
+  image: ruby:latest
+  stage: deploy
+  environment: Production
+  script:
+    - cd ./back-end
+    - cd ./react-api-chaosgroup
+    - gem install dpl
+    - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_API_KEY
+  only:
+    - develop # deploy contents in target branch
