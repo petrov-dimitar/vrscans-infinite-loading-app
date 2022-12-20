@@ -4,7 +4,7 @@
   "description": "Telerik Academy API Server for Upskill Programs",
   "main": "index.js",
   "scripts": {
-    "start": "json-server data.json -m ./node_modules/json-server-auth -r routes.json"
+    "start": "node start.js"
   },
   "author": "Telerik Academy",
   "license": "ISC",
