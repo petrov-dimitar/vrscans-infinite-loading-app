@@ -35,6 +35,11 @@ function handler(req, res) {
         const manufacturers = data.manufacturers
         res.end(JSON.stringify(manufacturers))
     }
+    else if(req.url === "/favorites"){
+        res.writeHead(200, {'Content-type':'text/plain'});
+        res.write('Sorry, no such path exists YET');
+        res.end();
+    }
     // TODO: Add favorites
     else{
         res.writeHead(200, {'Content-type':'text/plain'});
