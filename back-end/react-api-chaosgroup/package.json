@@ -6,10 +6,6 @@
   "scripts": {
     "start": "node start.js"
   },
-  "author": "Telerik Academy",
-  "license": "ISC",
-  "dependencies": {
-    "json-server": "^0.16.2",
-    "json-server-auth": "^2.0.2"
-  }
+  "author": "Dimitar and Kostadin",
+  "license": "ISC"
 }
