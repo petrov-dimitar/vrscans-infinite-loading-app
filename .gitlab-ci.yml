@@ -24,3 +24,15 @@ pages:
   only:
     refs:
       - develop # deploy contents in target branch
+
+herokuBE: 
+    stage: deploy
+    environment: Production
+    script:
+    - cd ./back-end
+    - cd ./react-api-chaosgroup
+    - git add .
+    - git commit -m "auto deploy"
+    only:
+      refs:
+        - dimitar/10/feat/add_be_and_ci # deploy contents in target branch
