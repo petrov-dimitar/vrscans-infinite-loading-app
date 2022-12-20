@@ -6,6 +6,8 @@
 
 deployed front-end app: [https://dimitarp.gitlab.io/lazy-loading-vrscans-library/](https://dimitarp.gitlab.io/lazy-loading-vrscans-library/)
 
+deployed back-end app: [https://boiling-cliffs-97152.herokuapp.com](https://boiling-cliffs-97152.herokuapp.com)
+
 ## husky
 
 In order to ensure branch and commit messages are following the naming conventions, we use husky with commit-msg and pre-push git hooks.
