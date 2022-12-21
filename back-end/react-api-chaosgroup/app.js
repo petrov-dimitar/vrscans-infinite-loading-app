@@ -2,7 +2,8 @@ const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const User = require("./models/UserModel");
-const bodyParser = require('body-parser')
+const bodyParser = require("body-parser");
+const jwt = require("jsonwebtoken");
 
 const app = express();
 
@@ -27,11 +28,38 @@ app.post("/signup", jsonParser, async (req, res) => {
   console.log("body", req.body);
   const newUser = await User.create(req.body);
 
+  const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+
   res.status(200).json({
     status: "success",
+    token,
     data: {
       user: newUser,
     },
+  });
+});
+
+app.post("/login",jsonParser, async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    res.status(400).json({
+      message: "No email or pass",
+    });
+  }
+
+  const user = await User.findOne({ email, password }).select("+password");
+
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+
+  res.status(200).json({
+    status: "success",
+    user,
+    token,
   });
 });
 
