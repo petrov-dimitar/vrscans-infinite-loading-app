@@ -1,0 +1,11 @@
+{
+    "/vrscans*": "/640/vrscans$1",
+    "/materials*": "/640/materials$1",
+    "/colors*": "/640/colors$1",
+    "/tags*": "/640/tags$1",
+
+    "/industries*": "/640/industries$1",
+    "/manufacturers*": "/640/manufacturers$1",
+    
+    "/favorites*": "/660/favorites$1"
+}

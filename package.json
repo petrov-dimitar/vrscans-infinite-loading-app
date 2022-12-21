@@ -1,0 +1,15 @@
+{
+  "name": "lazy-loading-vrscans-library Monorepo",
+  "version": "1.0.0",
+  "description": "root folder",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "prepare": "husky install"
+  },
+  "homepage": "https://gitlab.com/DimitarP/lazy-loading-vrscans-library",
+  "devDependencies": {
+    "husky": "^7.0.2"
+  },
+  "dependencies": {}
+}

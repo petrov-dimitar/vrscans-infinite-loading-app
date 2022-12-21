@@ -1,0 +1,38 @@
+image: node:18
+
+pages:
+  stage: deploy
+  environment: Production
+  cache:
+    paths:
+     - ./front-end/node_modules/
+  before_script:
+    - rm -rf ./front-end/dist
+    - CI=false npm install # install required packages
+  script:
+    - cd ./front-end
+    - CI=false npm install # install required packages
+    - CI=false npm run build # build the React app, set CI=false because CI=true treats all warnings as errors
+    - cp dist/index.html dist/404.html # reroute to index
+    - cd ..
+    - mkdir public # make public directory in root for deployment due to artifact path only allowing /public
+    - mv ./front-end/dist/* public # move build contents to new /public directory
+    - export
+  artifacts:
+    paths:
+      - public # only allow paths in project root directory for some reason
+  only:
+    refs:
+      - develop # deploy contents in target branch
+
+herokuBE: 
+  image: ruby:latest
+  stage: deploy
+  environment: Production
+  script:
+    - cd ./back-end
+    - cd ./react-api-chaosgroup
+    - gem install dpl
+    - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_API_KEY
+  only:
+    - develop # deploy contents in target branch
