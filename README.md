@@ -42,3 +42,41 @@ examples:
 - fix(scripts): add tests scripts
 
 More on the idea can be read here: [Conventional Commit Messages](https://gist.github.com/qoomon/5dfcdf8eec66a051ecd85625518cfd13)
+
+## Applications
+
+### Front-end
+#### Folder structure
+
+The folder structure methodology followed is based on modules - logically distributed set of files based on functionality. The paradigm is taken from the book Tao of React byb Alex Kondov.
+
+Example:
+├── modules
+| ├── common
+| | ├── utils
+| | ├── hooks
+| | ├── api
+| | ├── index.js
+| | ├── components
+| | | ├── Button.jsx
+| | | ├── Input.jsx
+| ├── dashboard
+| | ├── utils
+| | ├── hooks
+| | ├── api
+| | ├── index.js
+| | ├── components
+| | | ├── Table.jsx
+| | | ├── Sidebar.jsx
+| ├── details
+| | ├── index.js
+| | ├── components
+| | | ├── Form.jsx
+| | | ├── ItemCard.jsx
+
+For each module (optional folders):
+- Components folder might be the largest - hosting all components and sub-components.
+- Utils folder should contain small reusable, generic functions that are not specific to the business or React. (e.g email validation).
+- Hooks folder will keep the custom hooks - functions that use reactive state - both generic and business specific.
+- api folder holds business logic specific to module - functions and constants.
+- index.js - main entry point of module - defines page structure, routes and sub-routes
