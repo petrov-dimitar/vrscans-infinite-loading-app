@@ -2,7 +2,7 @@ import React from 'react';
 import SafariIcon from 'assets/safari.svg';
 import HeartIcon from 'assets/heart-solid.svg';
 import UserIcon from 'assets/user-regular.svg';
-import { ImageButton } from './ImageButton';
+import { ImageButton } from 'modules/common/components/ImageButton';
 
 export const Toolbar = () => {
   return (
