@@ -35,4 +35,4 @@ herokuBE:
     - gem install dpl
     - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_API_KEY
   only:
-    - develop # deploy contents in target branch
+    - dimitar/21/feat/be_add_swagger_documentation # deploy contents in target branch

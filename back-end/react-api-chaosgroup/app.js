@@ -8,6 +8,7 @@ const catchAsync = require("./utils/catchAsync");
 const AppError = require("./utils/appError");
 const data = require("./data.json");
 const { promisify } = require("util");
+const path = require("path");
 const expressOasGenerator = require("express-oas-generator");
 
 const jsonParser = bodyParser.json();
@@ -165,12 +166,12 @@ app.get("/colors", (req, res) => {
 });
 
 app.get("/industries", (req, res) => {
-  const colors = data.industries;
+  const industries = data.industries;
   res.status(200).json(industries);
 });
 
 app.get("/manufacturers", (req, res) => {
-  const colors = data.manufacturers;
+  const manufacturers = data.manufacturers;
   res.status(200).json(manufacturers);
 });
 
@@ -179,6 +180,10 @@ app.get("/manufacturers", (req, res) => {
 // TODO Add resource to user collection
 app.get("/favorites", (req, res) => {
   res.status(400);
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "./public/index.html"));
 });
 
 // Start server
