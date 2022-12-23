@@ -4,9 +4,11 @@
 
 ## Links
 
-deployed front-end app: [https://dimitarp.gitlab.io/lazy-loading-vrscans-library/](https://dimitarp.gitlab.io/lazy-loading-vrscans-library/)
+- deployed front-end app: [https://dimitarp.gitlab.io/lazy-loading-vrscans-library/](https://dimitarp.gitlab.io/lazy-loading-vrscans-library/)
 
-deployed back-end app: [https://boiling-cliffs-97152.herokuapp.com](https://boiling-cliffs-97152.herokuapp.com)
+- deployed back-end app: [https://boiling-cliffs-97152.herokuapp.com](https://boiling-cliffs-97152.herokuapp.com)
+
+- api documentation: [https://boiling-cliffs-97152.herokuapp.com/api-docs](https://boiling-cliffs-97152.herokuapp.com/api-docs)
 
 ## husky
 
@@ -47,34 +49,34 @@ More on the idea can be read here: [Conventional Commit Messages](https://gist.g
 
 ### Front-end
 #### Folder structure
-
 The folder structure methodology followed is based on modules - logically distributed set of files based on functionality. The paradigm is taken from the book Tao of React byb Alex Kondov.
 
-Example:
-├── modules
-| ├── common
-| | ├── utils
-| | ├── hooks
-| | ├── api
-| | ├── index.js
-| | ├── components
-| | | ├── Button.jsx
-| | | ├── Input.jsx
-| ├── dashboard
-| | ├── utils
-| | ├── hooks
-| | ├── api
-| | ├── index.js
-| | ├── components
-| | | ├── Table.jsx
-| | | ├── Sidebar.jsx
-| ├── details
-| | ├── index.js
-| | ├── components
-| | | ├── Form.jsx
-| | | ├── ItemCard.jsx
+Example Folder Structure:
+-  modules
+    - common
+        - utils
+        - hooks
+        - api
+        - index.tsx
+        - components
+            - Button.tsx
+            - Input.tsx
+     - dashboard
+        - utils
+        - hooks
+        - api
+        - index.js
+        - components
+            - Table.tsx
+            - Sidebar.tsx
+     - details
+        - index.tsx
+        - components
+            - Form.tsx
+            - ItemCard.tsx
 
 For each module (optional folders):
+
 - Components folder might be the largest - hosting all components and sub-components.
 - Utils folder should contain small reusable, generic functions that are not specific to the business or React. (e.g email validation).
 - Hooks folder will keep the custom hooks - functions that use reactive state - both generic and business specific.
