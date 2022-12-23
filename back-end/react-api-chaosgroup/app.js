@@ -8,22 +8,19 @@ const catchAsync = require("./utils/catchAsync");
 const AppError = require("./utils/appError");
 const data = require("./data.json");
 const { promisify } = require("util");
-const VrScan = require("./models/VrScansModel");
+const expressOasGenerator = require("express-oas-generator");
+
+const jsonParser = bodyParser.json();
+dotenv.config({ path: "../../.env" });
 
 const app = express();
-
-dotenv.config({ path: "../../.env" });
-const jsonParser = bodyParser.json();
-
-console.log(dotenv.config);
+expressOasGenerator.init(app, {}); // to overwrite generated specification's values use second argument.
 
 const DB = process.env.DATABASE.replace(
   "<PASSWORD>",
   process.env.DATABASE_PASSWORD
 );
-
 mongoose.set("strictQuery", false);
-
 mongoose.connect(DB).then((con) => {
   console.log(con.connections);
   console.log("success");
@@ -33,7 +30,6 @@ app.post(
   "/signup",
   jsonParser,
   catchAsync(async (req, res, next) => {
-    console.log("body", req.body);
     const newUser = await User.create(req.body);
 
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
@@ -47,6 +43,7 @@ app.post(
         user: newUser,
       },
     });
+    next();
   })
 );
 
@@ -59,7 +56,7 @@ app.post("/login", jsonParser, async (req, res, next) => {
     });
   }
 
-  const user = await User.findOne({ email, password }).select("+password");
+  const user = await User.findOne({ email }).select("+password");
 
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError("Incorrect email or password", 401));
@@ -74,6 +71,8 @@ app.post("/login", jsonParser, async (req, res, next) => {
     user,
     token,
   });
+
+  next();
 });
 
 app.get("/", (req, res) => {
@@ -107,8 +106,6 @@ app.post(
   "/vrscans",
   jsonParser,
   catchAsync(async (req, res, next) => {
-    console.log("body", req.body);
-
     // 1) Identify user from token
     let token;
     if (
@@ -153,6 +150,7 @@ app.post(
         updatedUser: updatedUser,
       },
     });
+    next();
   })
 );
 
