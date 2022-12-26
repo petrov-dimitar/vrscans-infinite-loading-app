@@ -19,13 +19,16 @@ export const Toolbar = () => {
         paddingRight: '8px'
       }}
     >
-      <span>App Name</span>
+      <Link to="/">
+        <span>App Name</span>
+      </Link>
+
       <div
         style={{
           display: 'flex'
         }}
       >
-        <Link to="/">
+        <Link to="/explore">
           <ImageButton src={SafariIcon} text="Explore" />
         </Link>
 
