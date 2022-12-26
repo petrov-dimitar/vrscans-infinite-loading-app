@@ -9,8 +9,10 @@ const AppError = require("./utils/appError");
 const data = require("./data.json");
 const { promisify } = require("util");
 const VrScan = require("./models/VrScansModel");
+const cors = require("cors");
 
 const app = express();
+app.use(cors());
 
 dotenv.config({ path: "../../.env" });
 const jsonParser = bodyParser.json();
