@@ -12,7 +12,8 @@ module.exports = {
   },
   output: {
     path: path.join(__dirname, '/dist'), // the bundle output path
-    filename: 'bundle.js' // the name of the bundle
+    filename: 'bundle.js', // the name of the bundle,
+    publicPath: '/'
   },
   plugins: [
     new ESLintPlugin({
@@ -30,7 +31,8 @@ module.exports = {
     })
   ],
   devServer: {
-    port: 3030 // you can change the port
+    port: 3030, // you can change the port
+    historyApiFallback: true
   },
   module: {
     rules: [
