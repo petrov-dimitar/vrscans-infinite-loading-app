@@ -14,6 +14,8 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 
+require("child_process").fork("seedVrScansScript.js"); //change the path depending on where the file is.
+
 dotenv.config({ path: "../../.env" });
 const jsonParser = bodyParser.json();
 
