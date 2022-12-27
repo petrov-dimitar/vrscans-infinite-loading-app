@@ -22,7 +22,8 @@ const VrScanItem = ({ vrScanObject }: { vrScanObject: VrScan }) => {
 
       <div
         style={{
-          display: 'flex'
+          display: 'flex',
+          justifyContent: 'space-between'
         }}
       >
         <div>{vrScanObject.name}</div>

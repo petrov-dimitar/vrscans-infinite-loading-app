@@ -1,5 +1,5 @@
 import Layout from 'modules/layout';
-import VrScansList from 'modules/vrScansList';
+import VrScansList from 'modules/ExplorePage';
 import React from 'react';
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -9,8 +9,6 @@ const App = () => {
     <>
       <Router>
         <Layout>
-          <h1>Hello React with TSX</h1>
-
           <div>
             <Routes>
               <Route path="/explore" element={<VrScansList />} />
