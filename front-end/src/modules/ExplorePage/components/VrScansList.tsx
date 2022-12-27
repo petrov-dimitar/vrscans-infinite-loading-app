@@ -9,9 +9,7 @@ export interface VrScan {
   fileName: string;
 }
 
-const ENDPOINT = 'http://localhost:1337/vrscans';
-
-const useFetchFromApi = (endpoint: string, currentPageProp?: number) => {
+const useFetchFromApi = (endpoint: string = '', currentPageProp?: number) => {
   const [vrScansData, setVrScansData] = useState<VrScan[] | null>(null);
 
   let dynamicEndpoint = endpoint;
@@ -34,8 +32,6 @@ const useFetchFromApi = (endpoint: string, currentPageProp?: number) => {
         response
           .json()
           .then((newScansRes) => {
-            console.log('newScansRes', newScansRes);
-
             return setVrScansData((prev) => {
               if (prev) {
                 return [...prev, ...newScansRes.vrscans];
@@ -55,19 +51,16 @@ const useFetchFromApi = (endpoint: string, currentPageProp?: number) => {
 
 const VrScansList = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [vrScansData] = useFetchFromApi(ENDPOINT, currentPage);
+  const [vrScansData] = useFetchFromApi(process.env.API_URL + '/vrscans', currentPage);
 
   useEffect(() => {
     window.addEventListener('scroll', updatePage, { passive: true });
-    console.log('vrScansData', vrScansData);
   }, [vrScansData]);
 
   const updatePage = useCallback(() => {
     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
     const finalPercentage = Math.round(((scrollTop + clientHeight) / scrollHeight) * 100);
-    console.log(finalPercentage);
     if (finalPercentage === 100) {
-      console.log('update page triggered');
       setCurrentPage((prev) => prev + 1);
       window.removeEventListener('scroll', updatePage);
     }

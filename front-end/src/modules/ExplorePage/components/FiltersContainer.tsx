@@ -9,7 +9,7 @@ const FiltersConteiner = () => {
 
   // Fetch Materials
   useEffect(() => {
-    fetch('http://localhost:1337/materials')
+    fetch(`${process.env.API_URL}/materials`)
       .then(function (response) {
         // The response is a Response instance.
         // You parse the data into a useable format using `.json()`
@@ -27,7 +27,7 @@ const FiltersConteiner = () => {
 
   // Fetch Colors
   useEffect(() => {
-    fetch('http://localhost:1337/colors')
+    fetch(`${process.env.API_URL}/colors`)
       .then(function (response) {
         // The response is a Response instance.
         // You parse the data into a useable format using `.json()`
@@ -45,7 +45,7 @@ const FiltersConteiner = () => {
 
   // Fetch Tags
   useEffect(() => {
-    fetch('http://localhost:1337/tags')
+    fetch(`${process.env.API_URL}/tags`)
       .then(function (response) {
         // The response is a Response instance.
         // You parse the data into a useable format using `.json()`
