@@ -8,13 +8,13 @@ const catchAsync = require("./utils/catchAsync");
 const AppError = require("./utils/appError");
 const data = require("./data.json");
 const { promisify } = require("util");
-const VrScan = require("./models/VrScansModel");
+const VrScanModel = require("./models/VrScansModel");
 const cors = require("cors");
 
 const app = express();
 app.use(cors());
 
-require("child_process").fork("seedVrScansScript.js"); //change the path depending on where the file is.
+// require("child_process").fork("seedVrScansScript.js"); //change the path depending on where the file is.
 
 dotenv.config({ path: "../../.env" });
 const jsonParser = bodyParser.json();
@@ -103,8 +103,43 @@ app.get("/materials", (req, res) => {
 });
 
 app.get("/vrscans", (req, res) => {
-  const vrscans = data.vrscans;
-  res.status(200).json(vrscans);
+  const { colors, materials, tags, skip, limit } = req.query;
+
+  const query = {};
+
+  if (colors) {
+    let colorsId = JSON.parse(colors).map((colorId) => Number(colorId));
+    query["colors"] = { $in: colorsId };
+  }
+  if (materials) {
+    let materialsId = JSON.parse(materials).map((materialsId) =>
+      Number(materialsId)
+    );
+    query["materialTypeId"] = { $in: materialsId };
+  }
+  if (tags) {
+    let tagsId = JSON.parse(tags).map((tagsId) => Number(tagsId));
+    query["tags"] = { $in: tagsId };
+  }
+
+  const pagination = { skip: 0, limit: 15 };
+
+  if (skip) {
+    pagination["skip"] = skip;
+  }
+  if (limit) {
+    pagination["limit"] = limit;
+  }
+
+  VrScanModel.find({ ...query }, {}, pagination, function (err, results) {
+    if (err) {
+      res.status(400).json(err);
+      res.end();
+    }
+
+    res.status(200).json({ totalResults: results.length, vrscans: results });
+    res.end();
+  });
 });
 
 app.post(
