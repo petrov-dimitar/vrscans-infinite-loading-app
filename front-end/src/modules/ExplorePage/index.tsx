@@ -9,7 +9,14 @@ const ExplorePage = () => {
         display: 'flex'
       }}
     >
-      <FiltersConteiner />
+      <div
+        style={{
+          width: '196px',
+          padding: '16px'
+        }}
+      >
+        <FiltersConteiner />
+      </div>
       <VrScansList />
     </div>
   );
