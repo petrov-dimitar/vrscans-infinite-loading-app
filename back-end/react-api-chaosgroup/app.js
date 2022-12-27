@@ -103,7 +103,7 @@ app.get("/materials", (req, res) => {
 });
 
 app.get("/vrscans", (req, res) => {
-  const { colors, materials, tags, skip, limit } = req.query;
+  const { colors, materials, tags, skip, limit, name } = req.query;
 
   const query = {};
 
@@ -120,6 +120,10 @@ app.get("/vrscans", (req, res) => {
   if (tags) {
     let tagsId = JSON.parse(tags).map((tagsId) => Number(tagsId));
     query["tags"] = { $in: tagsId };
+  }
+
+  if (name) {
+    query["name"] = { $in: name };
   }
 
   const pagination = { skip: 0, limit: 15 };
