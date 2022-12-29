@@ -1,5 +1,5 @@
 import React from 'react';
-import FiltersConteiner from './components/Filters/FiltersContainer';
+import FiltersContainer from './components/Filters/FiltersContainer';
 import VrScansList from './components/VrScans/VrScansList';
 
 const ExplorePage = () => {
@@ -15,7 +15,7 @@ const ExplorePage = () => {
           padding: '16px'
         }}
       >
-        <FiltersConteiner />
+        <FiltersContainer />
       </div>
       <VrScansList />
     </div>

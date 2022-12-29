@@ -1,17 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-
-export interface FiltersState {
-  selectedTags: number[];
-  selectedColors: number[];
-  selectedMaterials: number[];
-}
-
-export enum FilterType {
-  selectedTags = 'selectedTags',
-  selectedColors = 'selectedColors',
-  selectedMaterials = 'selectedMaterials'
-}
+import { FiltersState, FilterType } from '../types';
 
 const initialState: FiltersState = {
   selectedTags: [],
@@ -24,14 +13,7 @@ export const filtersSlice = createSlice({
   initialState,
   reducers: {
     addFilter: (state, action: PayloadAction<{ filterType: FilterType; id: number }>) => {
-      console.log('staet', state);
-      console.log('filterType', action.payload.filterType);
-      console.log('id', action.payload.id);
-
-      
       if (state[action.payload.filterType].includes(action.payload.id)) {
-          
-          console.log("includes");
         // Remove
         state[action.payload.filterType] = [...state[action.payload.filterType]].filter(
           (el: number) => el !== action.payload.id

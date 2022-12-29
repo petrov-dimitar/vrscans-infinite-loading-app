@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 // Define a service using a base URL and expected endpoints
 export const vrScansApi = createApi({
-  reducerPath: 'vrscans',
+  reducerPath: 'vrscansAPI',
   baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_API_URL }),
   endpoints: (builder) => ({
     getVrScansWithFilters: builder.query<
@@ -11,7 +11,6 @@ export const vrScansApi = createApi({
     >({
       query: (arg) => {
         const { limit, skip, materials, colors, tags } = arg;
-        console.log('arg: ', arg);
         return {
           url: `vrscans?${colors?.length ? 'colors=[' + colors + ']&' : ''}${
             tags?.length ? 'tags=[' + tags + ']&' : ''

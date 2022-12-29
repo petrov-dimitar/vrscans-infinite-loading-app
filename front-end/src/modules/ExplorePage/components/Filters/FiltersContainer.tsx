@@ -1,69 +1,21 @@
 import { TextField } from 'modules/common/components/TextField';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import FiltersComponent from './FiltersComponent';
 import { useDispatch } from 'react-redux';
-import { addFilter, FilterType } from 'modules/ExplorePage/redux/slice';
+import { addFilter } from 'modules/ExplorePage/redux/filtersSlice';
+import {
+  useGetColorsFiltersQuery,
+  useGetMaterialsFiltersQuery,
+  useGetTagsFiltersQuery
+} from 'modules/ExplorePage/redux/filtersService';
+import { FilterType } from 'modules/ExplorePage/types';
 
-const FiltersConteiner = () => {
-  const [materialsFilters, setMaterialsFilters] = useState<any>();
-  const [colorsFilters, setColorsFilters] = useState<any>();
-  const [tagsFilters, setTagsFilters] = useState<any>();
-
+const FiltersContainer = () => {
   const dispatch = useDispatch();
 
-  // Fetch Materials
-  useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/materials`)
-      .then(function (response) {
-        // The response is a Response instance.
-        // You parse the data into a useable format using `.json()`
-        response
-          .json()
-          .then((res) => {
-            setMaterialsFilters(res);
-          })
-          .catch((er) => console.log(er));
-      })
-      .catch((err) => {
-        console.log('err', err);
-      });
-  }, []);
-
-  // Fetch Colors
-  useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/colors`)
-      .then(function (response) {
-        // The response is a Response instance.
-        // You parse the data into a useable format using `.json()`
-        response
-          .json()
-          .then((res) => {
-            setColorsFilters(res);
-          })
-          .catch((er) => console.log(er));
-      })
-      .catch((err) => {
-        console.log('err', err);
-      });
-  }, []);
-
-  // Fetch Tags
-  useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/tags`)
-      .then(function (response) {
-        // The response is a Response instance.
-        // You parse the data into a useable format using `.json()`
-        response
-          .json()
-          .then((res) => {
-            setTagsFilters(res);
-          })
-          .catch((er) => console.log(er));
-      })
-      .catch((err) => {
-        console.log('err', err);
-      });
-  }, []);
+  const { data: tagsFilters } = useGetTagsFiltersQuery({});
+  const { data: colorsFilters } = useGetColorsFiltersQuery({});
+  const { data: materialsFilters } = useGetMaterialsFiltersQuery({});
 
   return (
     <div
@@ -82,7 +34,6 @@ const FiltersConteiner = () => {
             <input
               type="checkbox"
               onChange={(e) => {
-                console.log(e.target.value);
                 dispatch(
                   addFilter({ filterType: FilterType.selectedMaterials, id: filterItem.id })
                 );
@@ -104,10 +55,7 @@ const FiltersConteiner = () => {
             <input
               type="checkbox"
               onChange={(e) => {
-                console.log(e.target.value);
-                dispatch(
-                  addFilter({ filterType: FilterType.selectedColors, id: filterItem.id })
-                );
+                dispatch(addFilter({ filterType: FilterType.selectedColors, id: filterItem.id }));
               }}
             />{' '}
             <span>{filterItem.name}</span>
@@ -130,10 +78,7 @@ const FiltersConteiner = () => {
             <input
               type="checkbox"
               onChange={(e) => {
-                console.log(e.target.value);
-                dispatch(
-                  addFilter({ filterType: FilterType.selectedTags, id: filterItem.id })
-                );
+                dispatch(addFilter({ filterType: FilterType.selectedTags, id: filterItem.id }));
               }}
             />{' '}
             {filterItem.name}
@@ -144,4 +89,4 @@ const FiltersConteiner = () => {
   );
 };
 
-export default FiltersConteiner;
+export default FiltersContainer;

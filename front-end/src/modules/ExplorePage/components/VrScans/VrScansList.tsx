@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import VrScanItem from './VrScanItem';
 import { useSelector } from 'react-redux';
 import { RootState } from 'redux/store';
-import { useGetVrScansWithFiltersQuery } from 'modules/ExplorePage/redux/service';
+import { useGetVrScansWithFiltersQuery } from 'modules/ExplorePage/redux/vrScansService';
 
 export interface VrScan {
   id: Number;
@@ -19,7 +19,6 @@ const VrScansList = () => {
   const selectedColors = useSelector((state: RootState) => state.filters.selectedColors);
   const selectedMaterials = useSelector((state: RootState) => state.filters.selectedMaterials);
 
-  console.log('currentPage', currentPage);
   // Using a query hook automatically fetches data and returns query values
   const { data } = useGetVrScansWithFiltersQuery({
     colors: selectedColors,
@@ -51,8 +50,6 @@ const VrScansList = () => {
     window.addEventListener('scroll', updatePage, { passive: true });
     return () => window.removeEventListener('scroll', updatePage);
   }, []);
-
-  console.log('process.env api_url', process.env.REACT_APP_API_URL);
 
   return (
     <div
