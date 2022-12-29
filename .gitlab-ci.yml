@@ -25,7 +25,6 @@ pages:
     refs:
       - develop # deploy contents in target branch
 
-
 herokuBE: 
   image: ruby:latest
   stage: deploy

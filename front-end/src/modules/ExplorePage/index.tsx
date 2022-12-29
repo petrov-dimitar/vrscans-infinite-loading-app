@@ -1,6 +1,6 @@
 import React from 'react';
-import FiltersConteiner from './components/FiltersContainer';
-import VrScansList from './components/VrScansList';
+import FiltersConteiner from './components/Filters/FiltersContainer';
+import VrScansList from './components/VrScans/VrScansList';
 
 const ExplorePage = () => {
   return (

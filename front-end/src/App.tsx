@@ -1,15 +1,10 @@
 import Layout from 'modules/layout';
 import VrScansList from 'modules/ExplorePage';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 const App = () => {
-  useEffect(() => {
-    window.process = {
-      ...window.process
-    };
-  }, []);
   return (
     <>
       <Router basename="/lazy-loading-vrscans-library">
