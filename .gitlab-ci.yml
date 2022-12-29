@@ -12,7 +12,7 @@ pages:
   script:
     - cd ./front-end
     - CI=false npm install # install required packages
-    - CI=false npm run build # build the React app, set CI=false because CI=true treats all warnings as errors
+    - npx webpack --env REACT_APP_API_URL=$API_URL
     - cp dist/index.html dist/404.html # reroute to index
     - cd ..
     - mkdir public # make public directory in root for deployment due to artifact path only allowing /public
