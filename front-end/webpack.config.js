@@ -6,16 +6,11 @@ const ESLintPlugin = require('eslint-webpack-plugin');
 const dotenv = require('dotenv');
 const webpack = require('webpack');
 
-module.exports = () => {
-  // call dotenv and it will return an Object with a parsed key
-  const env = dotenv.config({ path: '../.env' }).parsed;
+module.exports = (env) => {
+  const dotenv = require('dotenv').config({ path: '../' + '.env' }).parsed;
 
-  // reduce it to a nice object, the same as before
-  const envKeys = Object.keys(env).reduce((prev, next) => {
-    prev[`process.env.${next}`] = JSON.stringify(env[next]);
-    return prev;
-  }, {});
-
+  const extendedEnv = { ...env, ...dotenv };
+  console.log(extendedEnv);
   return {
     entry: './src/index.tsx',
     resolve: {
@@ -28,7 +23,9 @@ module.exports = () => {
       publicPath: '/'
     },
     plugins: [
-      new webpack.DefinePlugin(envKeys),
+      new webpack.DefinePlugin({
+        'process.env': JSON.stringify(extendedEnv)
+      }),
       new ESLintPlugin({
         files: 'src/**/*.(js|jsx|ts|tsx)',
         extensions: ['.js', '.jsx', '.ts', '.tsx'],

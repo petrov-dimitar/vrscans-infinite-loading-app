@@ -9,7 +9,7 @@ const FiltersConteiner = () => {
 
   // Fetch Materials
   useEffect(() => {
-    fetch(`${process.env.API_URL}/materials`)
+    fetch(`${process.env.REACT_APP_API_URL}/materials`)
       .then(function (response) {
         // The response is a Response instance.
         // You parse the data into a useable format using `.json()`
@@ -27,7 +27,7 @@ const FiltersConteiner = () => {
 
   // Fetch Colors
   useEffect(() => {
-    fetch(`${process.env.API_URL}/colors`)
+    fetch(`${process.env.REACT_APP_API_URL}/colors`)
       .then(function (response) {
         // The response is a Response instance.
         // You parse the data into a useable format using `.json()`
@@ -45,7 +45,7 @@ const FiltersConteiner = () => {
 
   // Fetch Tags
   useEffect(() => {
-    fetch(`${process.env.API_URL}/tags`)
+    fetch(`${process.env.REACT_APP_API_URL}/tags`)
       .then(function (response) {
         // The response is a Response instance.
         // You parse the data into a useable format using `.json()`

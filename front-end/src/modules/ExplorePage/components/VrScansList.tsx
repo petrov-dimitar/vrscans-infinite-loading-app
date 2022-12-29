@@ -51,7 +51,7 @@ const useFetchFromApi = (endpoint: string = '', currentPageProp?: number) => {
 
 const VrScansList = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [vrScansData] = useFetchFromApi(process.env.API_URL + '/vrscans', currentPage);
+  const [vrScansData] = useFetchFromApi(process.env.REACT_APP_API_URL + '/vrscans', currentPage);
 
   useEffect(() => {
     window.addEventListener('scroll', updatePage, { passive: true });
@@ -70,6 +70,8 @@ const VrScansList = () => {
     window.addEventListener('scroll', updatePage, { passive: true });
     return () => window.removeEventListener('scroll', updatePage);
   }, []);
+
+  console.log('process.env api_url', process.env.REACT_APP_API_URL);
 
   return (
     <div
