@@ -7,7 +7,7 @@ const dotenv = require('dotenv');
 const webpack = require('webpack');
 
 module.exports = (env) => {
-  const dotenv = require('dotenv').config({ path: '../../' + '.env' }).parsed;
+  const dotenv = require('dotenv').config({ path: '../' + '.env' }).parsed;
 
   const extendedEnv = { ...env, ...dotenv };
   console.log(extendedEnv);
