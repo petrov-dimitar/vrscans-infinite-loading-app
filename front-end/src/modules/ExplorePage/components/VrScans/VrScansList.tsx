@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import VrScanItem from './VrScanItem';
+import { useSelector } from 'react-redux';
+import { RootState } from 'redux/store';
 
 export interface VrScan {
   id: Number;
@@ -52,6 +54,13 @@ const useFetchFromApi = (endpoint: string = '', currentPageProp?: number) => {
 const VrScansList = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [vrScansData] = useFetchFromApi(process.env.REACT_APP_API_URL + '/vrscans', currentPage);
+
+  const selectedTags = useSelector((state: RootState) => state.filters.selectedTags);
+  const selectedColors = useSelector((state: RootState) => state.filters.selectedColors);
+  const selectedMaterials = useSelector((state: RootState) => state.filters.selectedMaterials);
+
+  console.log(selectedColors, selectedTags, selectedMaterials);
+
 
   useEffect(() => {
     window.addEventListener('scroll', updatePage, { passive: true });

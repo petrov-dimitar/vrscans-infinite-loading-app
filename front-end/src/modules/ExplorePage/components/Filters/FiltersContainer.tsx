@@ -1,11 +1,15 @@
 import { TextField } from 'modules/common/components/TextField';
 import React, { useEffect, useState } from 'react';
 import FiltersComponent from './FiltersComponent';
+import { useDispatch } from 'react-redux';
+import { addFilter, FilterType } from 'modules/ExplorePage/redux/slice';
 
 const FiltersConteiner = () => {
   const [materialsFilters, setMaterialsFilters] = useState<any>();
   const [colorsFilters, setColorsFilters] = useState<any>();
   const [tagsFilters, setTagsFilters] = useState<any>();
+
+  const dispatch = useDispatch();
 
   // Fetch Materials
   useEffect(() => {
@@ -75,7 +79,16 @@ const FiltersConteiner = () => {
       <FiltersComponent title="Material">
         {materialsFilters?.map((filterItem) => (
           <div key={filterItem.name}>
-            <input type="checkbox" /> {filterItem.name}
+            <input
+              type="checkbox"
+              onChange={(e) => {
+                console.log(e.target.value);
+                dispatch(
+                  addFilter({ filterType: FilterType.selectedMaterials, id: filterItem.id })
+                );
+              }}
+            />{' '}
+            {filterItem.name}
           </div>
         ))}
       </FiltersComponent>
@@ -88,7 +101,16 @@ const FiltersConteiner = () => {
             }}
             key={filterItem.name}
           >
-            <input type="checkbox" /> <span>{filterItem.name}</span>
+            <input
+              type="checkbox"
+              onChange={(e) => {
+                console.log(e.target.value);
+                dispatch(
+                  addFilter({ filterType: FilterType.selectedColors, id: filterItem.id })
+                );
+              }}
+            />{' '}
+            <span>{filterItem.name}</span>
             <span
               style={{
                 width: '16px',
@@ -105,7 +127,16 @@ const FiltersConteiner = () => {
       <FiltersComponent title="Tag">
         {tagsFilters?.map((filterItem) => (
           <div key={filterItem.name}>
-            <input type="checkbox" /> {filterItem.name}
+            <input
+              type="checkbox"
+              onChange={(e) => {
+                console.log(e.target.value);
+                dispatch(
+                  addFilter({ filterType: FilterType.selectedTags, id: filterItem.id })
+                );
+              }}
+            />{' '}
+            {filterItem.name}
           </div>
         ))}
       </FiltersComponent>
