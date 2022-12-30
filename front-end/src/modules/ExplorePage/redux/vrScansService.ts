@@ -1,9 +1,7 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import apiService from 'redux/api.service';
 
 // Define a service using a base URL and expected endpoints
-export const vrScansApi = createApi({
-  reducerPath: 'vrscansAPI',
-  baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_API_URL }),
+export const vrScansApi = apiService.injectEndpoints({
   endpoints: (builder) => ({
     getVrScansWithFilters: builder.query<
       any,

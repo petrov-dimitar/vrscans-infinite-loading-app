@@ -37,7 +37,6 @@ app.post(
   "/signup",
   jsonParser,
   catchAsync(async (req, res, next) => {
-    console.log("body", req.body);
     const newUser = await User.create(req.body);
 
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
@@ -63,7 +62,7 @@ app.post("/login", jsonParser, async (req, res, next) => {
     });
   }
 
-  const user = await User.findOne({ email, password }).select("+password");
+  const user = await User.findOne({ email }).select("+password");
 
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError("Incorrect email or password", 401));
