@@ -8,6 +8,7 @@ const ExplorePage = () => {
       style={{
         display: 'flex'
       }}
+      data-cy="explorepageContainer"
     >
       <div
         style={{
