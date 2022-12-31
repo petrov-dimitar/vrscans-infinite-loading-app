@@ -4,6 +4,7 @@ import filtersReducer from 'modules/ExplorePage/redux/filtersSlice';
 import { filtersApi } from 'modules/ExplorePage/redux/filtersService';
 import { authApi } from './auth.service';
 import apiService from './api.service';
+import authSlice from './auth.slice';
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ export const store = configureStore({
     [apiService.reducerPath]: apiService.reducer,
 
     // Reducers
+    auth: authSlice,
     filters: filtersReducer
   },
   // Adding the api middleware enables caching, invalidation, polling,

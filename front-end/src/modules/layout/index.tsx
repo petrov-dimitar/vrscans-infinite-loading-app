@@ -1,24 +1,14 @@
-import React, { useEffect } from 'react';
-import { useLoginMutation } from 'redux/auth.service';
-import { setJWT } from 'redux/utils/jwt.utils';
+import React from 'react';
+import { useGetUserByTokenQuery } from 'redux/auth.service';
 import { Toolbar } from './components/Toolbar';
+import { useDispatch } from 'react-redux';
+import { updateUser } from 'redux/auth.slice';
 
 const Layout: React.FC<any> = ({ children }) => {
-  const [login, { data, error }] = useLoginMutation();
-
-  useEffect(() => {
-    login({
-      email: 'dimitar12@email.com',
-      password: '123456'
-    });
-  }, []);
-
-  if (error) {
-    console.log(error);
-  }
-  if (data) {
-    console.log('data', data);
-    setJWT(data.token);
+  const dispatch = useDispatch();
+  const { data: userData } = useGetUserByTokenQuery({});
+  if (userData) {
+    dispatch(updateUser(userData));
   }
   return (
     <>

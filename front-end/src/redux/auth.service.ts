@@ -1,15 +1,19 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import apiService from './api.service';
 
 // Define a service using a base URL and expected endpoints
-export const authApi = createApi({
-  reducerPath: 'auth',
-  baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_API_URL }),
+export const authApi = apiService.injectEndpoints({
   endpoints: (builder) => ({
-    login: builder.mutation<any, any>({
+    login: builder.mutation({
       query: (credentials) => ({
         url: '/login',
         method: 'POST',
         body: credentials
+      })
+    }),
+    getUserByToken: builder.query({
+      query: () => ({
+        url: '/user_by_token',
+        method: 'GET'
       })
     })
   })
@@ -17,4 +21,4 @@ export const authApi = createApi({
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useLoginMutation } = authApi;
+export const { useLoginMutation, useGetUserByTokenQuery } = authApi;
