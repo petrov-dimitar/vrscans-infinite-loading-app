@@ -1,6 +1,9 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import { authApi } from './auth.service';
+import { RootState } from './store';
+import { createSelector } from 'reselect';
 
 interface User {
   email: string;
@@ -28,9 +31,24 @@ const authSlice = createSlice({
       state.token = payload.accessToken;
       state.user = payload.data.currentUser;
     }
+  },
+  extraReducers: (builder) => {
+    builder.addMatcher(
+      authApi.endpoints.getUserByToken.matchFulfilled,
+      (state, action: PayloadAction<any>) => {
+        const user = action.payload.data.currentUser;
+        if (user) {
+          state.user = user;
+        }
+      }
+    );
   }
 });
 
 export const { updateUser } = authSlice.actions;
 
 export default authSlice.reducer;
+
+export const selectedUser = (state: RootState) => state.auth.user;
+
+export const selectUser = createSelector([selectedUser], (state) => state);
