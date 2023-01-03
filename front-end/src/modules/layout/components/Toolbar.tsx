@@ -4,8 +4,12 @@ import HeartIcon from 'assets/heart-solid.svg';
 import UserIcon from 'assets/user-regular.svg';
 import { ImageButton } from 'modules/common/components/ImageButton';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from 'redux/store';
 
 export const Toolbar = () => {
+  const selectedUser = useSelector((state: RootState) => state.auth.user);
+
   return (
     <div
       style={{
@@ -36,9 +40,15 @@ export const Toolbar = () => {
           <ImageButton src={HeartIcon} text="Favorites" />
         </Link>
 
-        <Link to="/profile">
-          <ImageButton src={UserIcon} text="Profile" />
-        </Link>
+        {selectedUser ? (
+          <Link to="/profile">
+            <ImageButton src={selectedUser.photo} text={selectedUser.email} />
+          </Link>
+        ) : (
+          <Link to="/profile">
+            <ImageButton src={UserIcon} text="Profile" />
+          </Link>
+        )}
       </div>
     </div>
   );

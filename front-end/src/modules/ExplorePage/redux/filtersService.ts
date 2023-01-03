@@ -1,9 +1,7 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import apiService from 'redux/api.service';
 
 // Define a service using a base URL and expected endpoints
-export const filtersApi = createApi({
-  reducerPath: 'filtersAPI',
-  baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_API_URL }),
+export const filtersApi = apiService.injectEndpoints({
   endpoints: (builder) => ({
     getColorsFilters: builder.query({
       query: () => {

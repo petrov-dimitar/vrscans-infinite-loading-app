@@ -5,7 +5,13 @@ const Layout: React.FC<any> = ({ children }) => {
   return (
     <>
       <Toolbar />
-      {children}
+      <div
+        style={{
+          height: 'calc(100% - 64px)'
+        }}
+      >
+        {children}
+      </div>
     </>
   );
 };
