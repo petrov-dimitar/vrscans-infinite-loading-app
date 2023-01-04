@@ -3,9 +3,10 @@ import React from 'react';
 interface ImageButtonProps {
   src: string;
   text: string;
+  onClick: () => VoidFunction
 }
 
-export const ImageButton: React.FC<ImageButtonProps> = ({ src, text }) => {
+export const ImageButton: React.FC<ImageButtonProps> = ({ src, text, onClick }) => {
   return (
     <div
       style={{
@@ -15,6 +16,7 @@ export const ImageButton: React.FC<ImageButtonProps> = ({ src, text }) => {
         alignItems: 'center',
         cursor: 'pointer'
       }}
+      onClick={onClick}
     >
       <img height={20} width={20} src={src} />
       <span>{text}</span>

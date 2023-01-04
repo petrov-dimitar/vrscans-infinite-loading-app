@@ -1,7 +1,4 @@
 import React from 'react';
-import HeartIcon from 'assets/heart-solid.svg';
-import { ImageButton } from 'modules/common/components/ImageButton';
-
 export interface VrScan {
   id: Number;
   name: String;
@@ -28,7 +25,7 @@ const VrScanItem = ({ vrScanObject }: { vrScanObject: VrScan }) => {
       >
         <div>{vrScanObject.name}</div>
         <div>
-          <ImageButton src={HeartIcon} />
+          remove
         </div>
       </div>
       <div>{vrScanObject.manufacturerId}</div>
