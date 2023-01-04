@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import HeartIcon from 'assets/heart-solid.svg';
 import { ImageButton } from 'modules/common/components/ImageButton';
 import { useAddScanToUserFavoritesMutation } from 'modules/ExplorePage/redux/vrScansService';
+import { toast } from 'react-toastify';
 
 export interface VrScan {
   id: Number;
@@ -12,7 +13,21 @@ export interface VrScan {
 }
 
 const VrScanItem = ({ vrScanObject }: { vrScanObject: VrScan }) => {
-  const [addScanToFavorites] = useAddScanToUserFavoritesMutation();
+  const [addScanToFavorites, { isError, isSuccess }] = useAddScanToUserFavoritesMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log('success');
+      toast.success('Successfully added scan to Favorties.');
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isError) {
+      console.log('error');
+      toast.error('Error occurred');
+    }
+  }, [isError]);
 
   return (
     <div
@@ -31,9 +46,12 @@ const VrScanItem = ({ vrScanObject }: { vrScanObject: VrScan }) => {
       >
         <div>{vrScanObject.name}</div>
         <div>
-          <ImageButton src={HeartIcon} onClick={() => {
-            addScanToFavorites(vrScanObject)
-          }} />
+          <ImageButton
+            src={HeartIcon}
+            onClick={() => {
+              addScanToFavorites(vrScanObject);
+            }}
+          />
         </div>
       </div>
       <div>{vrScanObject.manufacturerId}</div>

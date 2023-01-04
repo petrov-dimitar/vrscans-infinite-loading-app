@@ -8,6 +8,9 @@ import { useSelector } from 'react-redux';
 import { selectUser } from 'redux/auth.slice';
 import NotAuthorizedPage from 'modules/common/components/NotAuthorized';
 import FavoritesPage from 'modules/Favorites';
+// Load react toastify CSS
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 const ProtectedRoute: React.FC<any> = () => {
   const { isFetching } = useGetUserByTokenQuery({});
@@ -31,6 +34,12 @@ const App = () => {
 
   return (
     <>
+         <ToastContainer
+          hideProgressBar
+          theme="colored"
+          autoClose={5000}
+          position="top-center"
+        />
       <Router basename="/lazy-loading-vrscans-library">
         <Layout>
           <Routes>
