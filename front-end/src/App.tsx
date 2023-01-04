@@ -3,15 +3,16 @@ import VrScansList from 'modules/ExplorePage';
 import React, { useEffect } from 'react';
 
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
-import { useLoginMutation } from 'redux/auth.service';
+import { useGetUserByTokenQuery, useLoginMutation } from 'redux/auth.service';
 import { useSelector } from 'react-redux';
 import { selectUser } from 'redux/auth.slice';
 import NotAuthorizedPage from 'modules/common/components/NotAuthorized';
 import FavoritesPage from 'modules/Favorites';
 
 const ProtectedRoute: React.FC<any> = () => {
+  const { isFetching } = useGetUserByTokenQuery({});
   const user = useSelector(selectUser);
-  return user ? <Outlet /> : <Navigate to="/not-authorized" />;
+  return !isFetching && !user ? <Navigate to="/not-authorized" /> : <Outlet />;
 };
 
 const App = () => {
@@ -26,7 +27,7 @@ const App = () => {
     });
   }, []);
 
-  // useGetUserByTokenQuery({});
+  useGetUserByTokenQuery({});
 
   return (
     <>
@@ -39,7 +40,7 @@ const App = () => {
               <Route path="/profile" element={<div>Profile page</div>} />
             </Route>
             <Route path="/favorites" element={<ProtectedRoute />}>
-              <Route path="/favorites" element={<FavoritesPage/>} />
+              <Route path="/favorites" element={<FavoritesPage />} />
             </Route>
             <Route path="*" element={<Navigate to="/explore" replace />} />
           </Routes>
