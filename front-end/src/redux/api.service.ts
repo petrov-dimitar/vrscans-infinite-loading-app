@@ -3,8 +3,12 @@ import { baseQuery } from './baseQuery';
 
 export const apiService = createApi({
   reducerPath: 'api',
+  tagTypes: [
+    'FAVORITES'
+  ],
   baseQuery,
-  endpoints: () => ({})
+  endpoints: () => ({}),
+  
 });
 
 export default apiService;

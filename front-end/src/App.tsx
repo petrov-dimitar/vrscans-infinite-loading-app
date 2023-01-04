@@ -1,9 +1,9 @@
 import Layout from 'modules/layout';
 import VrScansList from 'modules/ExplorePage';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
-import { useGetUserByTokenQuery, useLoginMutation } from 'redux/auth.service';
+import { useGetUserByTokenQuery } from 'redux/auth.service';
 import { useSelector } from 'react-redux';
 import { selectUser } from 'redux/auth.slice';
 import NotAuthorizedPage from 'modules/common/components/NotAuthorized';
@@ -19,27 +19,21 @@ const ProtectedRoute: React.FC<any> = () => {
 };
 
 const App = () => {
-  // Check if authenticated
+  // Testing login
+  // const [login] = useLoginMutation();
 
-  const [login] = useLoginMutation();
-
-  useEffect(() => {
-    login({
-      email: 'dimitar12@email.com',
-      password: '123456'
-    });
-  }, []);
+  // useEffect(() => {
+  //   login({
+  //     email: 'dimitar13@email.com',
+  //     password: '123456'
+  //   });
+  // }, []);
 
   useGetUserByTokenQuery({});
 
   return (
     <>
-         <ToastContainer
-          hideProgressBar
-          theme="colored"
-          autoClose={5000}
-          position="top-center"
-        />
+      <ToastContainer hideProgressBar theme="colored" autoClose={5000} position="top-center" />
       <Router basename="/lazy-loading-vrscans-library">
         <Layout>
           <Routes>

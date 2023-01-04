@@ -19,25 +19,31 @@ export const vrScansApi = apiService.injectEndpoints({
         };
       }
     }),
-    
-  getFavoritesScansForUser: builder.query({
-    query: () => {
-      return {
-        url: `user_favorites`
-      }
-    }
-  }),
-  
-  addScanToUserFavorites: builder.mutation({
-    query: (scan) => ({
-      url: '/vrscans',
-      method: 'POST',
-      body: scan
+
+    getFavoritesScansForUser: builder.query({
+      query: () => {
+        return {
+          url: `user_favorites`
+        };
+      },
+      providesTags: ['FAVORITES']
+    }),
+
+    addScanToUserFavorites: builder.mutation({
+      query: (scan) => ({
+        url: '/vrscans',
+        method: 'POST',
+        body: scan
+      }),
+      invalidatesTags: ['FAVORITES']
     })
-  }),
-  }),
+  })
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetVrScansWithFiltersQuery, useGetFavoritesScansForUserQuery, useAddScanToUserFavoritesMutation } = vrScansApi;
+export const {
+  useGetVrScansWithFiltersQuery,
+  useGetFavoritesScansForUserQuery,
+  useAddScanToUserFavoritesMutation
+} = vrScansApi;
