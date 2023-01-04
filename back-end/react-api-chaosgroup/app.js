@@ -1,7 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
-const User = require("./models/UserModel");
+const UserModel = require("./models/UserModel");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const catchAsync = require("./utils/catchAsync");
@@ -37,7 +37,7 @@ app.post(
   "/signup",
   jsonParser,
   catchAsync(async (req, res, next) => {
-    const newUser = await User.create(req.body);
+    const newUser = await UserModel.create(req.body);
 
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN,
@@ -62,7 +62,7 @@ app.post("/login", jsonParser, async (req, res, next) => {
     });
   }
 
-  const user = await User.findOne({ email }).select("+password");
+  const user = await UserModel.findOne({ email }).select("+password");
 
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError("Incorrect email or password", 401));
@@ -172,7 +172,7 @@ app.get(
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
     // Check if user still exists
-    const currentUser = await User.findById(decoded.id);
+    const currentUser = await UserModel.findById(decoded.id);
     if (!currentUser) {
       return next(
         new AppError(
@@ -220,7 +220,7 @@ app.post(
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
     // Check if user still exists
-    const currentUser = await User.findById(decoded.id);
+    const currentUser = await UserModel.findById(decoded.id);
     if (!currentUser) {
       return next(
         new AppError(
@@ -231,7 +231,7 @@ app.post(
     }
 
     // 2) Add VrScans to user from model
-    const updatedUser = await User.updateOne(currentUser, {
+    const updatedUser = await UserModel.updateOne(currentUser, {
       $addToSet: { favorites: req.body },
     });
 
@@ -266,12 +266,54 @@ app.get("/manufacturers", (req, res) => {
   res.status(200).json(manufacturers);
 });
 
-// Favourites
-// TODO: Make protected route
-// TODO Add resource to user collection
-app.get("/favorites", (req, res) => {
-  res.status(400);
-});
+app.get(
+  "/user_favorites",
+  jsonParser,
+  catchAsync(async (req, res, next) => {
+    console.log("body", req.body);
+
+    // 1) Identify user from token
+    let token;
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
+      token = req.headers.authorization.split(" ")[1];
+    } else if (req.cookies && req.cookies.jwt) {
+      token = req.cookies.jwt;
+    }
+
+    if (!token) {
+      return next(
+        new AppError("You are not logged in! Please log in to get access.", 401)
+      );
+    }
+
+    // Verification token
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+    // Check if user still exists
+    const currentUser = await UserModel.findById(decoded.id);
+    if (!currentUser) {
+      return next(
+        new AppError(
+          "The user belonging to this token does no longer exist.",
+          401
+        )
+      );
+    }
+
+    console.log('currentUser', currentUser)
+
+    // 3) Return response
+    res.status(200).json({
+      status: "success",
+      token,
+      favorites: currentUser.favorites,
+      
+    });
+  })
+);
 
 // Start server
 const port = process.env.PORT || 1337;

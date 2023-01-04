@@ -1,12 +1,13 @@
 import Layout from 'modules/layout';
 import VrScansList from 'modules/ExplorePage';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
-import { useGetUserByTokenQuery } from 'redux/auth.service';
+import { useLoginMutation } from 'redux/auth.service';
 import { useSelector } from 'react-redux';
 import { selectUser } from 'redux/auth.slice';
 import NotAuthorizedPage from 'modules/common/components/NotAuthorized';
+import FavoritesPage from 'modules/Favorites';
 
 const ProtectedRoute: React.FC<any> = () => {
   const user = useSelector(selectUser);
@@ -15,7 +16,17 @@ const ProtectedRoute: React.FC<any> = () => {
 
 const App = () => {
   // Check if authenticated
-  useGetUserByTokenQuery({});
+
+  const [login] = useLoginMutation();
+
+  useEffect(() => {
+    login({
+      email: 'dimitar12@email.com',
+      password: '123456'
+    });
+  }, []);
+
+  // useGetUserByTokenQuery({});
 
   return (
     <>
@@ -28,7 +39,7 @@ const App = () => {
               <Route path="/profile" element={<div>Profile page</div>} />
             </Route>
             <Route path="/favorites" element={<ProtectedRoute />}>
-              <Route path="/favorites" element={<div>Favorites page</div>} />
+              <Route path="/favorites" element={<FavoritesPage/>} />
             </Route>
             <Route path="*" element={<Navigate to="/explore" replace />} />
           </Routes>
