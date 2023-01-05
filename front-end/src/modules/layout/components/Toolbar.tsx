@@ -4,15 +4,18 @@ import HeartIcon from 'assets/heart-solid.svg';
 import UserIcon from 'assets/user-regular.svg';
 import { ImageButton } from 'modules/common/components/ImageButton';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from 'redux/store';
 import { useCurrentPath } from 'modules/common/hooks/useCurrentPath';
+import { logout } from 'redux/auth.slice';
 
 export const Toolbar = () => {
   const selectedUser = useSelector((state: RootState) => state.auth.user);
 
   const currentPath = useCurrentPath();
   const activeColor = 'red';
+
+  const dispatch = useDispatch();
 
   return (
     <div
@@ -53,16 +56,24 @@ export const Toolbar = () => {
         </Link>
 
         {selectedUser ? (
-          <Link to="/profile">
+          <>
+            <Link to="/profile">
+              <ImageButton
+                src={selectedUser.photo}
+                text={selectedUser.email}
+                textColor={currentPath && currentPath[0]?.pathname === '/profile' && activeColor}
+              />
+            </Link>
             <ImageButton
-              src={selectedUser.photo}
-              text={selectedUser.email}
-              textColor={currentPath && currentPath[0]?.pathname === '/profile' && activeColor}
+              text="logout"
+              onClick={() => {
+                dispatch(logout());
+              }}
             />
-          </Link>
+          </>
         ) : (
-          <Link to="/profile">
-            <ImageButton src={UserIcon} text="Profile" />
+          <Link to="/login">
+            <ImageButton src={UserIcon} text="Login" />
           </Link>
         )}
       </div>

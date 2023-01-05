@@ -1,6 +1,7 @@
 import Layout from 'modules/layout';
 import VrScansList from 'modules/ExplorePage';
 import React from 'react';
+import RegisterComponent from '../src/modules/RegisterForm/RegisterComponent'
 
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { useGetUserByTokenQuery } from 'redux/auth.service';
@@ -19,16 +20,6 @@ const ProtectedRoute: React.FC<any> = () => {
 };
 
 const App = () => {
-  // Testing login
-  // const [login] = useLoginMutation();
-
-  // useEffect(() => {
-  //   login({
-  //     email: 'dimitar13@email.com',
-  //     password: '123456'
-  //   });
-  // }, []);
-
   useGetUserByTokenQuery({});
 
   return (
@@ -39,9 +30,10 @@ const App = () => {
           <Routes>
             <Route path="/explore" element={<VrScansList />} />
             <Route path="/not-authorized" element={<NotAuthorizedPage />} />
-            <Route path="/profile" element={<ProtectedRoute />}>
+            <Route path="/profile" element={<ProtectedRoute  />}>
               <Route path="/profile" element={<div>Profile page</div>} />
             </Route>
+            <Route path="/login" element={<RegisterComponent/>} />
             <Route path="/favorites" element={<ProtectedRoute />}>
               <Route path="/favorites" element={<FavoritesPage />} />
             </Route>

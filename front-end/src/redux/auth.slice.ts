@@ -4,7 +4,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { authApi } from './auth.service';
 import { RootState } from './store';
 import { createSelector } from 'reselect';
-import { setJWT } from './utils/jwt.utils';
+import { clearJWT, setJWT } from './utils/jwt.utils';
 
 interface User {
   email: string;
@@ -27,10 +27,10 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    updateUser: (state, action: PayloadAction<{ data: any; accessToken: string | null }>) => {
-      const { payload } = action;
-      state.token = payload.accessToken;
-      state.user = payload.data.currentUser;
+    logout: (state) => {
+      clearJWT();
+      state.token = null;
+      state.user = null;
     }
   },
   extraReducers: (builder) => {
@@ -63,7 +63,7 @@ const authSlice = createSlice({
   }
 });
 
-export const { updateUser } = authSlice.actions;
+export const { logout } = authSlice.actions;
 
 export default authSlice.reducer;
 
