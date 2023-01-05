@@ -14,6 +14,7 @@ pages:
     - CI=false npm install # install required packages
     - npx webpack --env REACT_APP_API_URL=$API_URL
     - cp dist/index.html dist/404.html # reroute to index
+    - ls
     - cd ..
     - mkdir public # make public directory in root for deployment due to artifact path only allowing /public
     - mv ./front-end/dist/* public # move build contents to new /public directory
@@ -23,7 +24,7 @@ pages:
       - public # only allow paths in project root directory for some reason
   only:
     refs:
-      - develop # deploy contents in target branch
+      - dimitar/00/fix/fe_webpack_assets # deploy contents in target branch
 
 herokuBE: 
   image: ruby:latest
