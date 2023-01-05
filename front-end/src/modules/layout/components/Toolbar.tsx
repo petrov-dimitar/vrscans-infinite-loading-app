@@ -61,8 +61,8 @@ export const Toolbar = () => {
             />
           </Link>
         ) : (
-          <Link to="/profile">
-            <ImageButton src={UserIcon} text="Profile" />
+          <Link to="/login">
+            <ImageButton src={UserIcon} text="Login" />
           </Link>
         )}
       </div>
