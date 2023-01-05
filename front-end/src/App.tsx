@@ -20,16 +20,6 @@ const ProtectedRoute: React.FC<any> = () => {
 };
 
 const App = () => {
-  // Testing login
-  // const [login] = useLoginMutation();
-
-  // useEffect(() => {
-  //   login({
-  //     email: 'dimitar13@email.com',
-  //     password: '123456'
-  //   });
-  // }, []);
-
   useGetUserByTokenQuery({});
 
   return (

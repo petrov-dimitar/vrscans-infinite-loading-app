@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 function withReduxHook(Component) {
   return function WrappedComponent(props) {
     const [login, response] = useLoginMutation();
-    return <Component {...props} login={[login, response]}  />;
+    return <Component {...props} login={[login, response]} />;
   };
 }
 class RegisterComponent extends React.Component {
@@ -115,13 +115,17 @@ class RegisterComponent extends React.Component {
     });
   };
 
-  componentDidUpdate(){
-    if(this.props.login[1].isSuccess){
-      toast.success('Successfully logged in');
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.login[1].isSuccess !== this.props.login[1].isSuccess) {
+      if (this.props.login[1].isSuccess) {
+        toast.success('Successfully logged in');
+      }
     }
-    else if (this.props.login[1].isError){
-      toast.error('Could not log you in!');
 
+    if (prevProps.login[1].isError !== this.props.login[1].isError) {
+      if (this.props.login[1].isError) {
+        toast.error('Could not log you in!');
+      }
     }
   }
 
