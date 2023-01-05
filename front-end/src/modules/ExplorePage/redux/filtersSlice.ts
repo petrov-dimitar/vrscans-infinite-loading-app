@@ -5,7 +5,8 @@ import { FiltersState, FilterType } from '../types';
 const initialState: FiltersState = {
   selectedTags: [],
   selectedColors: [],
-  selectedMaterials: []
+  selectedMaterials: [],
+  searchName: ''
 };
 
 export const filtersSlice = createSlice({
@@ -22,11 +23,14 @@ export const filtersSlice = createSlice({
         // Add
         state[action.payload.filterType] = [...state[action.payload.filterType], action.payload.id];
       }
+    },
+    updateSearch: (state, action: PayloadAction<{ name: string }>) => {
+      state.searchName = action.payload.name;
     }
   }
 });
 
 // Action creators are generated for each case reducer function
-export const { addFilter } = filtersSlice.actions;
+export const { addFilter, updateSearch } = filtersSlice.actions;
 
 export default filtersSlice.reducer;
