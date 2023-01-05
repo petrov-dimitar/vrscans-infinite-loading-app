@@ -3,7 +3,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
-const dotenv = require('dotenv');
 const webpack = require('webpack');
 
 module.exports = (env) => {
@@ -58,15 +57,8 @@ module.exports = (env) => {
           use: ['style-loader', 'css-loader', 'sass-loader']
         },
         {
-          test: /\.(png|jp(e*)g|svg|gif)$/,
-          use: [
-            {
-              loader: 'file-loader',
-              options: {
-                name: 'images/[hash]-[name].[ext]'
-              }
-            }
-          ]
+          test: /\.(png|svg|jpg|jpeg|gif)$/i,
+          type: 'asset/inline'
         }
       ]
     }
