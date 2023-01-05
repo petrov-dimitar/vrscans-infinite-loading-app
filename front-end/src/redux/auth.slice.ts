@@ -4,6 +4,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { authApi } from './auth.service';
 import { RootState } from './store';
 import { createSelector } from 'reselect';
+import { setJWT } from './utils/jwt.utils';
 
 interface User {
   email: string;
@@ -33,12 +34,29 @@ const authSlice = createSlice({
     }
   },
   extraReducers: (builder) => {
+    // Update user if token available on browser
     builder.addMatcher(
       authApi.endpoints.getUserByToken.matchFulfilled,
       (state, action: PayloadAction<any>) => {
         const user = action.payload.data.currentUser;
         if (user) {
           state.user = user;
+        }
+      }
+    );
+
+    // Update user on successful login
+    builder.addMatcher(
+      authApi.endpoints.login.matchFulfilled,
+      (state, action: PayloadAction<any>) => {
+        const user = action.payload.user;
+        const token = action.payload.token;
+
+        setJWT(token);
+
+        if (user) {
+          state.user = user;
+          state.token = token;
         }
       }
     );

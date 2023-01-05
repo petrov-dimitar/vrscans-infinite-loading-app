@@ -6,9 +6,13 @@ import { ImageButton } from 'modules/common/components/ImageButton';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from 'redux/store';
+import { useCurrentPath } from 'modules/common/hooks/useCurrentPath';
 
 export const Toolbar = () => {
   const selectedUser = useSelector((state: RootState) => state.auth.user);
+
+  const currentPath = useCurrentPath();
+  const activeColor = 'red';
 
   return (
     <div
@@ -33,16 +37,28 @@ export const Toolbar = () => {
         }}
       >
         <Link to="/explore">
-          <ImageButton src={SafariIcon} text="Explore" />
+          <ImageButton
+            src={SafariIcon}
+            text="Explore"
+            textColor={currentPath && currentPath[0]?.pathname === '/explore' && activeColor}
+          />
         </Link>
 
         <Link to="/favorites">
-          <ImageButton src={HeartIcon} text="Favorites" />
+          <ImageButton
+            src={HeartIcon}
+            text="Favorites"
+            textColor={currentPath && currentPath[0]?.pathname === '/favorites' && activeColor}
+          />
         </Link>
 
         {selectedUser ? (
           <Link to="/profile">
-            <ImageButton src={selectedUser.photo} text={selectedUser.email} />
+            <ImageButton
+              src={selectedUser.photo}
+              text={selectedUser.email}
+              textColor={currentPath && currentPath[0]?.pathname === '/profile' && activeColor}
+            />
           </Link>
         ) : (
           <Link to="/profile">

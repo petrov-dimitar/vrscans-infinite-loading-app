@@ -7,18 +7,33 @@ import { useGetUserByTokenQuery } from 'redux/auth.service';
 import { useSelector } from 'react-redux';
 import { selectUser } from 'redux/auth.slice';
 import NotAuthorizedPage from 'modules/common/components/NotAuthorized';
+import FavoritesPage from 'modules/Favorites';
+// Load react toastify CSS
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 const ProtectedRoute: React.FC<any> = () => {
+  const { isFetching } = useGetUserByTokenQuery({});
   const user = useSelector(selectUser);
-  return user ? <Outlet /> : <Navigate to="/not-authorized" />;
+  return !isFetching && !user ? <Navigate to="/not-authorized" /> : <Outlet />;
 };
 
 const App = () => {
-  // Check if authenticated
+  // Testing login
+  // const [login] = useLoginMutation();
+
+  // useEffect(() => {
+  //   login({
+  //     email: 'dimitar13@email.com',
+  //     password: '123456'
+  //   });
+  // }, []);
+
   useGetUserByTokenQuery({});
 
   return (
     <>
+      <ToastContainer hideProgressBar theme="colored" autoClose={5000} position="top-center" />
       <Router basename="/lazy-loading-vrscans-library">
         <Layout>
           <Routes>
@@ -28,7 +43,7 @@ const App = () => {
               <Route path="/profile" element={<div>Profile page</div>} />
             </Route>
             <Route path="/favorites" element={<ProtectedRoute />}>
-              <Route path="/favorites" element={<div>Favorites page</div>} />
+              <Route path="/favorites" element={<FavoritesPage />} />
             </Route>
             <Route path="*" element={<Navigate to="/explore" replace />} />
           </Routes>

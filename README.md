@@ -52,6 +52,10 @@ To run the project locally you need:
 install the node modules in the root, front-end, and back-end folders. run:
 
 ```
+#In front-end first get the desired node version
+nvm use
+
+#For everything
 npm install
 ```
 
