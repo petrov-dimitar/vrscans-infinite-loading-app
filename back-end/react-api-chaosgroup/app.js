@@ -122,7 +122,7 @@ app.get("/vrscans", (req, res) => {
   }
 
   if (name) {
-    query["name"] = { $in: name };
+    query["name"] = new RegExp(`^` + name, 'i');
   }
 
   const pagination = { skip: 0, limit: 15 };
@@ -303,14 +303,13 @@ app.get(
       );
     }
 
-    console.log('currentUser', currentUser)
+    console.log("currentUser", currentUser);
 
     // 3) Return response
     res.status(200).json({
       status: "success",
       token,
       favorites: currentUser.favorites,
-      
     });
   })
 );

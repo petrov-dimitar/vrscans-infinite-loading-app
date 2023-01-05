@@ -18,6 +18,7 @@ const VrScansList = () => {
   const selectedTags = useSelector((state: RootState) => state.filters.selectedTags);
   const selectedColors = useSelector((state: RootState) => state.filters.selectedColors);
   const selectedMaterials = useSelector((state: RootState) => state.filters.selectedMaterials);
+  const selectedName = useSelector((state: RootState) => state.filters.searchName);
 
   // Using a query hook automatically fetches data and returns query values
   const { data } = useGetVrScansWithFiltersQuery({
@@ -25,6 +26,7 @@ const VrScansList = () => {
     materials: selectedMaterials,
     tags: selectedTags,
     skip: 0,
+    name: selectedName,
     limit: currentPage === 1 ? 30 : 30 + currentPage * 10
   });
 

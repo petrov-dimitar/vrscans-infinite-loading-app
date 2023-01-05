@@ -2,7 +2,7 @@ import { TextField } from 'modules/common/components/TextField';
 import React from 'react';
 import FiltersComponent from './FiltersComponent';
 import { useDispatch } from 'react-redux';
-import { addFilter } from 'modules/ExplorePage/redux/filtersSlice';
+import { addFilter, updateSearch } from 'modules/ExplorePage/redux/filtersSlice';
 import {
   useGetColorsFiltersQuery,
   useGetMaterialsFiltersQuery,
@@ -27,7 +27,12 @@ const FiltersContainer = () => {
       }}
     >
       Filters Container
-      <TextField placeholder="Search" />
+      <TextField
+        onChange={(e) => {
+          dispatch(updateSearch({ name: e.target.value }));
+        }}
+        placeholder="Search"
+      />
       <FiltersComponent title="Material">
         {materialsFilters?.map((filterItem) => (
           <div key={filterItem.name}>

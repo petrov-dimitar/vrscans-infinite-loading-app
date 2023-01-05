@@ -5,9 +5,10 @@ interface TextFieldProps {
   icon?: string;
 }
 
-export const TextField: React.FC<TextFieldProps> = ({ icon, placeholder }) => {
+export const TextField: React.FC<TextFieldProps> = ({ icon, placeholder, ...rest }) => {
   return (
     <input
+      {...rest}
       style={{
         padding: '8px',
         borderRadius: '4px',
