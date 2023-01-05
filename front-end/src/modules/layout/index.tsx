@@ -1,10 +1,12 @@
 import React from 'react';
 import { Toolbar } from './components/Toolbar';
+import RegisterComponent from '../RegisterForm/RegisterComponent'
 
 const Layout: React.FC<any> = ({ children }) => {
   const paddingTop = '16px';
   return (
     <>
+    
       <Toolbar />
       <div
         style={{
