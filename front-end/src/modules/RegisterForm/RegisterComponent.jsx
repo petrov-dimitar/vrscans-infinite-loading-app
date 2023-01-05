@@ -1,9 +1,17 @@
 import React from 'react';
 import './registerForm.css';
+import { useLoginMutation } from 'redux/auth.service';
+import { toast } from 'react-toastify';
 
+function withReduxHook(Component) {
+  return function WrappedComponent(props) {
+    const [login, response] = useLoginMutation();
+    return <Component {...props} login={[login, response]}  />;
+  };
+}
 class RegisterComponent extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       fields: {},
       errors: {},
@@ -98,6 +106,25 @@ class RegisterComponent extends React.Component {
     return formIsValid;
   };
 
+  sendLoginCredentials = () => {
+    console.log('send login credentials');
+    console.log('props', this.props);
+    this.props.login[0]({
+      email: this.state.fields.email,
+      password: this.state.fields.password
+    });
+  };
+
+  componentDidUpdate(){
+    if(this.props.login[1].isSuccess){
+      toast.success('Successfully logged in');
+    }
+    else if (this.props.login[1].isError){
+      toast.error('Could not log you in!');
+
+    }
+  }
+
   render() {
     return (
       <div id="main-registration-container">
@@ -106,7 +133,12 @@ class RegisterComponent extends React.Component {
             textAlign: 'center'
           }}
         >
-          <input type="submit" className="button" value="Register" onClick={this.toggleSignInForm} />
+          <input
+            type="submit"
+            className="button"
+            value="Register"
+            onClick={this.toggleSignInForm}
+          />
           <input type="submit" className="button" value="Login" onClick={this.toggleSignInForm} />
         </div>
 
@@ -149,7 +181,12 @@ class RegisterComponent extends React.Component {
                 textAlign: 'center'
               }}
             >
-              <input type="submit" className="button" value="Login" />
+              <input
+                type="submit"
+                className="button"
+                value="Login"
+                onClick={this.sendLoginCredentials}
+              />
             </div>
           </div>
         ) : (
@@ -205,4 +242,4 @@ class RegisterComponent extends React.Component {
   }
 }
 
-export default RegisterComponent;
+export default withReduxHook(RegisterComponent);
