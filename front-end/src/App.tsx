@@ -12,6 +12,7 @@ import FavoritesPage from 'modules/Favorites';
 // Load react toastify CSS
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import Stripe from 'modules/Stripe'
 
 const ProtectedRoute: React.FC<any> = () => {
   const { isFetching } = useGetUserByTokenQuery({});
@@ -29,6 +30,7 @@ const App = () => {
         <Layout>
           <Routes>
             <Route path="/explore" element={<VrScansList />} />
+            <Route path="/subscribe" element={<Stripe />} />
             <Route path="/not-authorized" element={<NotAuthorizedPage />} />
             <Route path="/profile" element={<ProtectedRoute  />}>
               <Route path="/profile" element={<div>Profile page</div>} />
@@ -37,7 +39,7 @@ const App = () => {
             <Route path="/favorites" element={<ProtectedRoute />}>
               <Route path="/favorites" element={<FavoritesPage />} />
             </Route>
-            <Route path="*" element={<Navigate to="/explore" replace />} />
+            {/* <Route path="*" element={<Navigate to="/explore" replace />} /> */}
           </Routes>
         </Layout>
       </Router>
