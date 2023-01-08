@@ -7,7 +7,13 @@ interface ImageButtonProps {
   onClick: () => VoidFunction;
 }
 
-export const ImageButton: React.FC<ImageButtonProps> = ({ src, text, onClick, textColor }) => {
+export const ImageButton: React.FC<ImageButtonProps> = ({
+  src,
+  text,
+  onClick,
+  textColor,
+  icon
+}) => {
   return (
     <div
       style={{
@@ -20,7 +26,7 @@ export const ImageButton: React.FC<ImageButtonProps> = ({ src, text, onClick, te
       }}
       onClick={onClick}
     >
-      <img height={20} width={20} src={src} />
+      {icon || <img height={20} width={20} src={src} />}
       <span
         style={{
           color: textColor

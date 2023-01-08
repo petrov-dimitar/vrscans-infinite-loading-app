@@ -31,11 +31,19 @@ const VrScanItem = ({ vrScanObject }: { vrScanObject: VrScan }) => {
   return (
     <div
       style={{
+        margin: `8px`,
         padding: `8px`,
-        maxWidth: '195px'
+        width: '195px',
+        background: 'white'
       }}
     >
-      <img width="100%" src={vrScanObject.thumb} />
+      <div
+        style={{
+          textAlign: 'center'
+        }}
+      >
+        <img width="70%" src={vrScanObject.thumb} />
+      </div>
 
       <div
         style={{

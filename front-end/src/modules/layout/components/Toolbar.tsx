@@ -9,6 +9,8 @@ import { RootState } from 'redux/store';
 import { useCurrentPath } from 'modules/common/hooks/useCurrentPath';
 import { logout } from 'redux/auth.slice';
 import RegisterForm from '../../RegisterForm/RegisterComponent';
+import { Typography } from '@mui/material';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 export const Toolbar = () => {
   const selectedUser = useSelector((state: RootState) => state.auth.user);
@@ -20,75 +22,78 @@ export const Toolbar = () => {
 
   const [isRegisterModalOpen, setIsRegisterModelOpen] = useState(false);
   return (
-    <div
-      style={{
-        height: '64px',
-        background: '#FDFDFF',
-        boxShadow: '0px 2px 16px rgba(125, 131, 255, 0.2)',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingLeft: '8px',
-        paddingRight: '8px'
-      }}
-    >
+    <>
       <RegisterForm
         isModalOpen={isRegisterModalOpen}
         setIsModalOpen={setIsRegisterModelOpen}
       ></RegisterForm>
-      <Link to="/">
-        <span>App Name</span>
-      </Link>
-
       <div
         style={{
-          display: 'flex'
+          height: '64px',
+          background: '#FDFDFF',
+          boxShadow: '0px 2px 16px rgba(125, 131, 255, 0.2)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          paddingLeft: '8px',
+          paddingRight: '8px',
+          marginBottom: '16px'
         }}
       >
-        <Link to="/explore">
-          <ImageButton
-            src={SafariIcon}
-            text="Explore"
-            textColor={currentPath && currentPath[0]?.pathname === '/explore' && activeColor}
-          />
+        <Link to="/">
+          <Typography variant="h4">SCAO</Typography>
         </Link>
 
-        <Link to="/favorites">
-          <ImageButton
-            src={HeartIcon}
-            text="Favorites"
-            textColor={currentPath && currentPath[0]?.pathname === '/favorites' && activeColor}
-          />
-        </Link>
-
-        {selectedUser ? (
-          <>
-            <Link to="/profile">
-              <ImageButton
-                src={selectedUser.photo}
-                text={selectedUser.email}
-                textColor={currentPath && currentPath[0]?.pathname === '/profile' && activeColor}
-              />
-            </Link>
+        <div
+          style={{
+            display: 'flex'
+          }}
+        >
+          <Link to="/explore">
             <ImageButton
-              text="logout"
+              src={SafariIcon}
+              text="Explore"
+              textColor={currentPath && currentPath[0]?.pathname === '/explore' && activeColor}
+            />
+          </Link>
+
+          <Link to="/favorites">
+            <ImageButton
+              src={HeartIcon}
+              text="Favorites"
+              textColor={currentPath && currentPath[0]?.pathname === '/favorites' && activeColor}
+            />
+          </Link>
+
+          {selectedUser ? (
+            <>
+              <Link to="/profile">
+                <ImageButton
+                  icon={<AccountCircleIcon/>}
+                  text={selectedUser.email}
+                  textColor={currentPath && currentPath[0]?.pathname === '/profile' && activeColor}
+                />
+              </Link>
+              <ImageButton
+                text="logout"
+                onClick={() => {
+                  dispatch(logout());
+                }}
+              />
+            </>
+          ) : (
+            // <Link to="/login">
+            <ImageButton
+              src={UserIcon}
+              text="Login"
               onClick={() => {
-                dispatch(logout());
+                setIsRegisterModelOpen(true);
               }}
             />
-          </>
-        ) : (
-          // <Link to="/login">
-          <ImageButton
-            src={UserIcon}
-            text="Login"
-            onClick={() => {
-              setIsRegisterModelOpen(true);
-            }}
-          />
-          // </Link>
-        )}
+            // </Link>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
