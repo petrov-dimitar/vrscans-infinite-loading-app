@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import SafariIcon from 'assets/safari.svg';
 import HeartIcon from 'assets/heart-solid.svg';
 import UserIcon from 'assets/user-regular.svg';
@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from 'redux/store';
 import { useCurrentPath } from 'modules/common/hooks/useCurrentPath';
 import { logout } from 'redux/auth.slice';
+import RegisterForm from '../../RegisterForm/RegisterComponent';
 
 export const Toolbar = () => {
   const selectedUser = useSelector((state: RootState) => state.auth.user);
@@ -17,6 +18,7 @@ export const Toolbar = () => {
 
   const dispatch = useDispatch();
 
+  const [isRegisterModalOpen, setIsRegisterModelOpen] = useState(false);
   return (
     <div
       style={{
@@ -30,6 +32,10 @@ export const Toolbar = () => {
         paddingRight: '8px'
       }}
     >
+      <RegisterForm
+        isModalOpen={isRegisterModalOpen}
+        setIsModalOpen={setIsRegisterModelOpen}
+      ></RegisterForm>
       <Link to="/">
         <span>App Name</span>
       </Link>
@@ -72,9 +78,15 @@ export const Toolbar = () => {
             />
           </>
         ) : (
-          <Link to="/login">
-            <ImageButton src={UserIcon} text="Login" />
-          </Link>
+          // <Link to="/login">
+          <ImageButton
+            src={UserIcon}
+            text="Login"
+            onClick={() => {
+              setIsRegisterModelOpen(true);
+            }}
+          />
+          // </Link>
         )}
       </div>
     </div>

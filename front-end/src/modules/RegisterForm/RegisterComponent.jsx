@@ -2,6 +2,7 @@ import React from 'react';
 import './registerForm.css';
 import { useLoginMutation } from 'redux/auth.service';
 import { toast } from 'react-toastify';
+import AppModal from 'modules/common/components/AppModal';
 
 function withReduxHook(Component) {
   return function WrappedComponent(props) {
@@ -119,6 +120,7 @@ class RegisterComponent extends React.Component {
     if (prevProps.login[1].isSuccess !== this.props.login[1].isSuccess) {
       if (this.props.login[1].isSuccess) {
         toast.success('Successfully logged in');
+        this.props.setIsModalOpen(false);
       }
     }
 
@@ -131,117 +133,118 @@ class RegisterComponent extends React.Component {
 
   render() {
     return (
-      <div id="main-registration-container">
-        <div
-          style={{
-            textAlign: 'center'
-          }}
-        >
-          <input
-            type="submit"
-            className="button"
-            value="Register"
-            onClick={this.toggleSignInForm}
-          />
-          <input type="submit" className="button" value="Login" onClick={this.toggleSignInForm} />
+      <AppModal open={this.props.isModalOpen} setOpen={() => this.props.setIsModalOpen(false)}>
+        <div id="main-registration-container">
+          <div
+            style={{
+              textAlign: 'center'
+            }}
+          >
+            <input
+              type="submit"
+              className="button"
+              value={this.state.showSignUp ? 'Register' : 'Login'}
+              onClick={this.toggleSignInForm}
+            />
+          </div>
+
+          {this.state.showSignUp ? (
+            <div id="login">
+              <h3>Login</h3>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  padding: '8px'
+                }}
+              >
+                <label>Email</label>
+                <input
+                  type="text"
+                  name="email"
+                  value={this.state.fields.email}
+                  onChange={this.handleChange}
+                />
+              </div>
+
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  padding: '8px'
+                }}
+              >
+                <label>Set a password</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={this.state.fields.password}
+                  onChange={this.handleChange}
+                />
+              </div>
+              <div
+                style={{
+                  textAlign: 'center'
+                }}
+              >
+                <input
+                  type="submit"
+                  className="button"
+                  value="Login"
+                  onClick={this.sendLoginCredentials}
+                />
+              </div>
+            </div>
+          ) : (
+            <div id="register">
+              <h3>Register</h3>
+
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  padding: '8px'
+                }}
+              >
+                <label>Email</label>
+                <input
+                  type="text"
+                  name="email"
+                  value={this.state.fields.email}
+                  onChange={this.handleChange}
+                />
+              </div>
+
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  padding: '8px'
+                }}
+              >
+                <label>Set a password</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={this.state.fields.password}
+                  onChange={this.handleChange}
+                />
+              </div>
+              <div
+                style={{
+                  textAlign: 'center'
+                }}
+              >
+                <input type="submit" className="button" value="Register" />
+              </div>
+            </div>
+          )}
+          <div className="errorMsg">{this.state.errors.password}</div>
+          <div className="errorMsg">{this.state.errors.password}</div>
+          <div className="errorMsg">{this.state.errors.email}</div>
+          <div className="errorMsg">{this.state.errors.email}</div>
         </div>
-
-        {this.state.showSignUp ? (
-          <div id="login">
-            <h3>Login</h3>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                padding: '8px'
-              }}
-            >
-              <label>Email</label>
-              <input
-                type="text"
-                name="email"
-                value={this.state.fields.email}
-                onChange={this.handleChange}
-              />
-            </div>
-
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                padding: '8px'
-              }}
-            >
-              <label>Set a password</label>
-              <input
-                type="password"
-                name="password"
-                value={this.state.fields.password}
-                onChange={this.handleChange}
-              />
-            </div>
-            <div
-              style={{
-                textAlign: 'center'
-              }}
-            >
-              <input
-                type="submit"
-                className="button"
-                value="Login"
-                onClick={this.sendLoginCredentials}
-              />
-            </div>
-          </div>
-        ) : (
-          <div id="register">
-            <h3>Register</h3>
-
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                padding: '8px'
-              }}
-            >
-              <label>Email</label>
-              <input
-                type="text"
-                name="email"
-                value={this.state.fields.email}
-                onChange={this.handleChange}
-              />
-            </div>
-
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                padding: '8px'
-              }}
-            >
-              <label>Set a password</label>
-              <input
-                type="password"
-                name="password"
-                value={this.state.fields.password}
-                onChange={this.handleChange}
-              />
-            </div>
-            <div
-              style={{
-                textAlign: 'center'
-              }}
-            >
-              <input type="submit" className="button" value="Register" />
-            </div>
-          </div>
-        )}
-        <div className="errorMsg">{this.state.errors.password}</div>
-        <div className="errorMsg">{this.state.errors.password}</div>
-        <div className="errorMsg">{this.state.errors.email}</div>
-        <div className="errorMsg">{this.state.errors.email}</div>
-      </div>
+      </AppModal>
     );
   }
 }
