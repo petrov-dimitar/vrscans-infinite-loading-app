@@ -14,9 +14,9 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 
-app.use(express.static("public"));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+// app.use(express.static("public"));
+// app.use(express.urlencoded({ extended: true }));
+// app.use(express.json());
 
 // require("child_process").fork("seedVrScansScript.js"); //change the path depending on where the file is.
 
@@ -237,6 +237,28 @@ app.post(
       );
     }
 
+    let subscription = null;
+
+    if (currentUser.favorites.length > 3) {
+      if (currentUser.subscriptionId) {
+        subscription = await stripe.subscriptions.retrieve(
+          currentUser.subscriptionId
+        );
+
+        if (!subscription.plan.active) {
+          res.status(403).json({
+            status: "error",
+            message: "Please subscribe to add more than 5 scans to favorites",
+          });
+        }
+      } else {
+        res.status(403).json({
+          status: "error",
+          message: "Please subscribe to add more than 5 scans to favorites",
+        });
+      }
+    }
+
     // 2) Add VrScans to user from model
     const updatedUser = await UserModel.updateOne(currentUser, {
       $addToSet: { favorites: req.body },
@@ -326,6 +348,7 @@ const YOUR_DOMAIN = process.env.REACT_APP_URL;
 app.post(
   "/create-checkout-session",
   jsonParser,
+  express.urlencoded({ extended: true }),
 
   catchAsync(async (req, res, next) => {
     const prices = await stripe.prices.list({
@@ -356,7 +379,7 @@ app.post(
       ],
       metadata: { userEmail: currentUser.email },
       mode: "subscription",
-      success_url: `${YOUR_DOMAIN}/?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${YOUR_DOMAIN}?success=true&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${YOUR_DOMAIN}?canceled=true`,
     });
 
@@ -381,7 +404,7 @@ app.post("/create-portal-session", async (req, res) => {
   res.redirect(303, portalSession.url);
 });
 
-app.post("/webhook", express.raw({ type: "*/*" }), async (req, response) => {
+app.post("/webhook", express.raw({ type: "*/*" }), express.json(), async (req, response) => {
   console.log("inside webhook");
   let event = req.body;
   // Replace this endpoint secret with your endpoint's unique secret
@@ -393,12 +416,12 @@ app.post("/webhook", express.raw({ type: "*/*" }), async (req, response) => {
   // Otherwise use the basic event deserialized with JSON.parse
   if (endpointSecret) {
     // Get the signature sent by Stripe
-    const signature = request.headers["stripe-signature"];
+    const signature = req.headers["stripe-signature"];
     console.log("signature", signature);
     console.log("req.body", event);
     try {
       event = stripe.webhooks.constructEvent(
-        request.body,
+        req.body,
         signature,
         endpointSecret
       );

@@ -54,6 +54,7 @@ const ProfilePage = () => {
 
   return (
     <>
+        <ProductDisplay />
       <div>User Email: {user?.email}</div>
 
       <h5>Subscription</h5>
