@@ -19,7 +19,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "default.jpg",
   },
+  stripeCustomer: {
+    type: String,
+  },
+  subscriptionId: {
+    type: String,
+  },
   favorites: { type: mongoose.Schema.Types.Array, ref: "VrScan" },
+  subscription: {
+    type: Object
+  },
 });
 
 userSchema.pre("save", async function (next) {

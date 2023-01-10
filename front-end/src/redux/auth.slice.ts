@@ -11,6 +11,9 @@ interface User {
   password: string;
   photo: string;
   favorites: any[];
+  subscriptionId: string;
+  stripeCustomer: string;
+  subscription?: any;
 }
 
 interface AuthState {
@@ -38,7 +41,9 @@ const authSlice = createSlice({
     builder.addMatcher(
       authApi.endpoints.getUserByToken.matchFulfilled,
       (state, action: PayloadAction<any>) => {
-        const user = action.payload.data.currentUser;
+        const user = {...action.payload.data.currentUser};
+        user.subscription = action.payload.data.subscription;
+
         if (user) {
           state.user = user;
         }
@@ -68,5 +73,6 @@ export const { logout } = authSlice.actions;
 export default authSlice.reducer;
 
 export const selectedUser = (state: RootState) => state.auth.user;
+export const getToken = (state: RootState) => state.auth.token;
 
 export const selectUser = createSelector([selectedUser], (state) => state);

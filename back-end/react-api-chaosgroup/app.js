@@ -14,6 +14,10 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 
+// app.use(express.static("public"));
+// app.use(express.urlencoded({ extended: true }));
+// app.use(express.json());
+
 // require("child_process").fork("seedVrScansScript.js"); //change the path depending on where the file is.
 
 dotenv.config({ path: "../../.env" });
@@ -29,8 +33,7 @@ const DB = process.env.DATABASE.replace(
 mongoose.set("strictQuery", false);
 
 mongoose.connect(DB).then((con) => {
-  console.log(con.connections);
-  console.log("success");
+  console.log("DB Connection success");
 });
 
 app.post(
@@ -122,7 +125,7 @@ app.get("/vrscans", (req, res) => {
   }
 
   if (name) {
-    query["name"] = new RegExp(`^` + name, 'i');
+    query["name"] = new RegExp(`^` + name, "i");
   }
 
   const pagination = { skip: 0, limit: 15 };
@@ -149,8 +152,6 @@ app.get(
   "/user_by_token",
   jsonParser,
   catchAsync(async (req, res, next) => {
-    console.log("body", req.body);
-
     // 1) Identify user from token
     let token;
     if (
@@ -182,12 +183,20 @@ app.get(
       );
     }
 
+    let subscription = null;
+    if (currentUser.subscriptionId) {
+      subscription = await stripe.subscriptions.retrieve(
+        currentUser.subscriptionId
+      );
+    }
+
     // 3) Return response
     res.status(200).json({
       status: "success",
       token,
       data: {
-        currentUser: currentUser,
+        currentUser,
+        subscription,
       },
     });
   })
@@ -197,8 +206,6 @@ app.post(
   "/vrscans",
   jsonParser,
   catchAsync(async (req, res, next) => {
-    console.log("body", req.body);
-
     // 1) Identify user from token
     let token;
     if (
@@ -228,6 +235,28 @@ app.post(
           401
         )
       );
+    }
+
+    let subscription = null;
+
+    if (currentUser.favorites.length > 3) {
+      if (currentUser.subscriptionId) {
+        subscription = await stripe.subscriptions.retrieve(
+          currentUser.subscriptionId
+        );
+
+        if (!subscription.plan.active) {
+          res.status(403).json({
+            status: "error",
+            message: "Please subscribe to add more than 5 scans to favorites",
+          });
+        }
+      } else {
+        res.status(403).json({
+          status: "error",
+          message: "Please subscribe to add more than 5 scans to favorites",
+        });
+      }
     }
 
     // 2) Add VrScans to user from model
@@ -270,8 +299,6 @@ app.get(
   "/user_favorites",
   jsonParser,
   catchAsync(async (req, res, next) => {
-    console.log("body", req.body);
-
     // 1) Identify user from token
     let token;
     if (
@@ -303,8 +330,6 @@ app.get(
       );
     }
 
-    console.log("currentUser", currentUser);
-
     // 3) Return response
     res.status(200).json({
       status: "success",
@@ -313,6 +338,142 @@ app.get(
     });
   })
 );
+
+// Stripe
+
+const stripe = require("stripe")(process.env.STRIPE_KEY);
+
+const YOUR_DOMAIN = process.env.REACT_APP_URL;
+
+app.post(
+  "/create-checkout-session",
+  jsonParser,
+  express.urlencoded({ extended: true }),
+
+  catchAsync(async (req, res, next) => {
+    const prices = await stripe.prices.list({
+      lookup_keys: [req.body.lookup_key],
+      expand: ["data.product"],
+    });
+
+    const currentUser = await UserModel.findOne({ email: req.body.email });
+    // Check if user still exists
+
+    if (!currentUser) {
+      return next(
+        new AppError(
+          "The user belonging to this token does no longer exist.",
+          401
+        )
+      );
+    }
+
+    const session = await stripe.checkout.sessions.create({
+      billing_address_collection: "auto",
+      line_items: [
+        {
+          price: prices.data[0].id,
+          // For metered billing, do not pass quantity
+          quantity: 1,
+        },
+      ],
+      metadata: { userEmail: currentUser.email },
+      mode: "subscription",
+      success_url: `${YOUR_DOMAIN}?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${YOUR_DOMAIN}?canceled=true`,
+    });
+
+    res.redirect(303, session.url);
+  })
+);
+
+app.post("/create-portal-session", async (req, res) => {
+  // For demonstration purposes, we're using the Checkout session to retrieve the customer ID.
+  // Typically this is stored alongside the authenticated user in your database.
+  const { stripeCustomer } = req.body;
+
+  // This is the url to which the customer will be redirected when they are done
+  // managing their billing with the portal.
+  const returnUrl = YOUR_DOMAIN;
+
+  const portalSession = await stripe.billingPortal.sessions.create({
+    customer: stripeCustomer,
+    return_url: returnUrl,
+  });
+
+  res.redirect(303, portalSession.url);
+});
+
+app.post("/webhook", express.raw({ type: "*/*" }), express.json(), async (req, response) => {
+  console.log("inside webhook");
+  let event = req.body;
+  // Replace this endpoint secret with your endpoint's unique secret
+  // If you are testing with the CLI, find the secret by running 'stripe listen'
+  // If you are using an endpoint defined with the API or dashboard, look in your webhook settings
+  // at https://dashboard.stripe.com/webhooks
+  const endpointSecret = process.env.STRIPE_ENDPOINT_SECRET;
+  // Only verify the event if you have an endpoint secret defined.
+  // Otherwise use the basic event deserialized with JSON.parse
+  if (endpointSecret) {
+    // Get the signature sent by Stripe
+    const signature = req.headers["stripe-signature"];
+    console.log("signature", signature);
+    console.log("req.body", event);
+    try {
+      event = stripe.webhooks.constructEvent(
+        req.body,
+        signature,
+        endpointSecret
+      );
+    } catch (err) {
+      console.log(`⚠️  Webhook signature verification failed.`, err.message);
+      return response.sendStatus(400);
+    }
+  }
+  let subscription;
+  let status;
+  // Handle the event
+  switch (event.type) {
+    case "customer.subscription.trial_will_end":
+      subscription = event.data.object;
+      status = subscription.status;
+      console.log(`Subscription status is ${status}.`);
+      // Then define and call a method to handle the subscription trial ending.
+      // handleSubscriptionTrialEnding(subscription);
+      break;
+    case "customer.subscription.deleted":
+      subscription = event.data.object;
+      status = subscription.status;
+      console.log(`Subscription status is ${status}.`);
+      // Then define and call a method to handle the subscription deleted.
+      // handleSubscriptionDeleted(subscriptionDeleted);
+      break;
+    case "customer.subscription.created":
+      subscription = event.data.object;
+      status = subscription.status;
+      console.log(`Subscription status is ${status}.`);
+      // Then define and call a method to handle the subscription created.
+      // handleSubscriptionCreated(subscription);
+      break;
+    case "checkout.session.completed":
+      let data = event.data.object;
+      console.log(`data is ${JSON.stringify(data)}.`);
+
+      const user = await UserModel.findOne({ email: data.metadata.userEmail });
+
+      await UserModel.updateOne(user, {
+        stripeCustomer: data.customer,
+        subscriptionId: data.subscription,
+      });
+      break;
+
+    default:
+      // Unexpected event type
+      console.log(`Unhandled event type ${event.type}.`);
+  }
+  // Return a 200 response to acknowledge receipt of the event
+  response.send();
+});
 
 // Start server
 const port = process.env.PORT || 1337;

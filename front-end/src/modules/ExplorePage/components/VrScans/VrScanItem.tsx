@@ -13,8 +13,7 @@ export interface VrScan {
 }
 
 const VrScanItem = ({ vrScanObject }: { vrScanObject: VrScan }) => {
-  const [addScanToFavorites, { isError, isSuccess }] = useAddScanToUserFavoritesMutation();
-
+  const [addScanToFavorites, { isError, isSuccess, error }] = useAddScanToUserFavoritesMutation();
   useEffect(() => {
     if (isSuccess) {
       console.log('success');
@@ -25,18 +24,26 @@ const VrScanItem = ({ vrScanObject }: { vrScanObject: VrScan }) => {
   useEffect(() => {
     if (isError) {
       console.log('error');
-      toast.error('Error occurred');
+      toast.error(error.data.message);
     }
   }, [isError]);
 
   return (
     <div
       style={{
+        margin: `8px`,
         padding: `8px`,
-        maxWidth: '195px'
+        width: '195px',
+        background: 'white'
       }}
     >
-      <img width="100%" src={vrScanObject.thumb} />
+      <div
+        style={{
+          textAlign: 'center'
+        }}
+      >
+        <img width="70%" src={vrScanObject.thumb} />
+      </div>
 
       <div
         style={{
