@@ -36,6 +36,7 @@ const VrScanItem = ({ vrScanObject }: { vrScanObject: VrScan }) => {
         width: '195px',
         background: 'white'
       }}
+      data-cy={'explorepageContainer'}
     >
       <div
         style={{
