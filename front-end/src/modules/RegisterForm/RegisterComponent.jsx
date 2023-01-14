@@ -143,6 +143,7 @@ class RegisterComponent extends React.Component {
             <input
               type="submit"
               className="button"
+              data-cy="switchLoginButton"
               value={this.state.showSignUp ? 'Register' : 'Login'}
               onClick={this.toggleSignInForm}
             />
@@ -162,6 +163,7 @@ class RegisterComponent extends React.Component {
                 <input
                   type="text"
                   name="email"
+                  data-cy="emailField"
                   value={this.state.fields.email}
                   onChange={this.handleChange}
                 />
@@ -177,6 +179,7 @@ class RegisterComponent extends React.Component {
                 <label>Set a password</label>
                 <input
                   type="password"
+                  data-cy="passwordField"
                   name="password"
                   value={this.state.fields.password}
                   onChange={this.handleChange}
