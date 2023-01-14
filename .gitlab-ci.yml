@@ -36,3 +36,14 @@ herokuBE:
     - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_API_KEY
   only:
     - develop # deploy contents in target branch
+
+e2e tests:
+  stage: test
+  image: cypress/browsers:node18.12.0-chrome107
+  script:
+      - cd ./front-end
+      - npm ci
+      - npm run serve
+      - npx cypress run --browser chrome
+  only:
+    - dimitar/00/feat/fe_ci_cd_e2e_tests # deploy contents in target branch
