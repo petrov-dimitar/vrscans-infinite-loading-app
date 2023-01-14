@@ -3,6 +3,32 @@ import './registerForm.css';
 import { useLoginMutation } from 'redux/auth.service';
 import { toast } from 'react-toastify';
 import AppModal from 'modules/common/components/AppModal';
+import TextField from '@mui/material/TextField';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import { Button } from '@mui/material';
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
 
 function withReduxHook(Component) {
   return function WrappedComponent(props) {
@@ -16,7 +42,8 @@ class RegisterComponent extends React.Component {
     this.state = {
       fields: {},
       errors: {},
-      showSignUp: false
+      showSignUp: false,
+      value: 0
     };
   }
 
@@ -49,6 +76,11 @@ class RegisterComponent extends React.Component {
       this.setState({ fields });
       alert('Form submitted');
     }
+  };
+
+  handleChangeTab = (event, newValue) => {
+    this.setState({ value: newValue });
+    // setValue(newValue);
   };
 
   validateForm = () => {
@@ -135,113 +167,135 @@ class RegisterComponent extends React.Component {
     return (
       <AppModal open={this.props.isModalOpen} setOpen={() => this.props.setIsModalOpen(false)}>
         <div id="main-registration-container">
-          <div
-            style={{
-              textAlign: 'center'
-            }}
-          >
-            <input
-              type="submit"
-              className="button"
-              data-cy="switchLoginButton"
-              value={this.state.showSignUp ? 'Register' : 'Login'}
-              onClick={this.toggleSignInForm}
-            />
+          <div>
+            <h1
+              style={{
+                fontFamily: 'Fira Sans',
+                fontStyle: 'italic',
+                fontWeight: '275',
+                fontSize: '40px',
+                lineHeight: '48px',
+                color: '#000000'
+              }}
+            >
+              Hi There, welcome to SCAO
+            </h1>
+
+            <Box sx={{ width: '100%' }}>
+              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Tabs
+                  value={this.state.value}
+                  onChange={this.handleChangeTab}
+                  aria-label="basic tabs example"
+                  centered
+                >
+                  <Tab label="Login" />
+                  <Tab label="Register" />
+                </Tabs>
+              </Box>
+              <TabPanel value={this.state.value} index={0}>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    padding: '8px'
+                  }}
+                >
+                  <TextField
+                    name="email"
+                    data-cy="emailField"
+                    variant="standard"
+                    label="Email"
+                    value={this.state.fields.email}
+                    onChange={this.handleChange}
+                    fullWidth
+                    InputLabelProps={{ shrink: true }}
+                  ></TextField>
+                </div>
+
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    padding: '8px'
+                  }}
+                >
+                  <TextField
+                    type="password"
+                    data-cy="passwordField"
+                    name="password"
+                    value={this.state.fields.password}
+                    onChange={this.handleChange}
+                    fullWidth
+                    variant="standard"
+                    label="Password"
+                    InputLabelProps={{ shrink: true }}
+                  />
+                </div>
+                <div
+                  style={{
+                    textAlign: 'center',
+                    marginTop: '24px'
+                  }}
+                >
+                  <Button onClick={this.sendLoginCredentials} variant="contained" disableElevation>
+                    Login
+                  </Button>
+                </div>
+              </TabPanel>
+              <TabPanel value={this.state.value} index={1}>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    padding: '8px'
+                  }}
+                >
+                  <TextField
+                    name="email"
+                    data-cy="emailField"
+                    variant="standard"
+                    label="Email"
+                    value={this.state.fields.email}
+                    onChange={this.handleChange}
+                    fullWidth
+                    InputLabelProps={{ shrink: true }}
+                  ></TextField>
+                </div>
+
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    padding: '8px'
+                  }}
+                >
+                  <TextField
+                    type="password"
+                    data-cy="passwordField"
+                    name="password"
+                    value={this.state.fields.password}
+                    onChange={this.handleChange}
+                    fullWidth
+                    variant="standard"
+                    label="Password"
+                    InputLabelProps={{ shrink: true }}
+                  />
+                </div>
+                <div
+                  style={{
+                    textAlign: 'center',
+                    marginTop: '24px'
+                  }}
+                >
+                  <Button variant="contained" disableElevation>
+                    Register
+                  </Button>
+                </div>
+              </TabPanel>
+            </Box>
           </div>
 
-          {this.state.showSignUp ? (
-            <div id="login">
-              <h3>Login</h3>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  padding: '8px'
-                }}
-              >
-                <label>Email</label>
-                <input
-                  type="text"
-                  name="email"
-                  data-cy="emailField"
-                  value={this.state.fields.email}
-                  onChange={this.handleChange}
-                />
-              </div>
-
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  padding: '8px'
-                }}
-              >
-                <label>Set a password</label>
-                <input
-                  type="password"
-                  data-cy="passwordField"
-                  name="password"
-                  value={this.state.fields.password}
-                  onChange={this.handleChange}
-                />
-              </div>
-              <div
-                style={{
-                  textAlign: 'center'
-                }}
-              >
-                <input
-                  type="submit"
-                  className="button"
-                  value="Login"
-                  onClick={this.sendLoginCredentials}
-                />
-              </div>
-            </div>
-          ) : (
-            <div id="register">
-              <h3>Register</h3>
-
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  padding: '8px'
-                }}
-              >
-                <label>Email</label>
-                <input
-                  type="text"
-                  name="email"
-                  value={this.state.fields.email}
-                  onChange={this.handleChange}
-                />
-              </div>
-
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  padding: '8px'
-                }}
-              >
-                <label>Set a password</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={this.state.fields.password}
-                  onChange={this.handleChange}
-                />
-              </div>
-              <div
-                style={{
-                  textAlign: 'center'
-                }}
-              >
-                <input type="submit" className="button" value="Register" />
-              </div>
-            </div>
-          )}
           <div className="errorMsg">{this.state.errors.password}</div>
           <div className="errorMsg">{this.state.errors.password}</div>
           <div className="errorMsg">{this.state.errors.email}</div>
