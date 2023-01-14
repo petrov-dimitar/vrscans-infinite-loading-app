@@ -14,8 +14,10 @@
     "baseUrl": ".",
     "paths": {
       "*": ["./src/*"]
-    }
+    },
+    "lib": ["es5", "dom"],
+    "types": ["cypress", "node"]
   },
-  "include": ["./src/**/*", "custom.d.ts"],
+  "include": ["./src/**/*", "custom.d.ts", "**/*.ts"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

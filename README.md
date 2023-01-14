@@ -77,6 +77,13 @@ To run the backend app, navigate to folder and run:
 npm start
 ```
 
+## Testing Front-end
+
+```
+cd ./front-end
+npx cypress open
+```
+
 ## husky
 
 In order to ensure branch and commit messages are following the naming conventions, we use husky with commit-msg and pre-push git hooks.
@@ -121,6 +128,7 @@ More on the idea can be read here: [Conventional Commit Messages](https://gist.g
 The folder structure methodology followed is based on modules - logically distributed set of files based on functionality. The paradigm is taken from the book Tao of React byb Alex Kondov.
 
 Example:
+
 - ├── modules
 - | ├── common
 - | | ├── utils

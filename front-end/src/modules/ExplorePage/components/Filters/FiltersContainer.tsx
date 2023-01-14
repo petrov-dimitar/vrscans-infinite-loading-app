@@ -31,11 +31,12 @@ const FiltersContainer = () => {
         onChange={(e) => {
           dispatch(updateSearch({ name: e.target.value }));
         }}
+        data-cy="searchFilter"
         placeholder="Search"
       />
       <FiltersComponent title="Material">
         {materialsFilters?.map((filterItem) => (
-          <div key={filterItem.name}>
+          <div key={filterItem.name} data-cy="materialFilters">
             <input
               type="checkbox"
               onChange={(e) => {
@@ -79,7 +80,7 @@ const FiltersContainer = () => {
       </FiltersComponent>
       <FiltersComponent title="Tag">
         {tagsFilters?.map((filterItem) => (
-          <div key={filterItem.name}>
+          <div key={filterItem.name} data-cy="tagFilters">
             <input
               type="checkbox"
               onChange={(e) => {
