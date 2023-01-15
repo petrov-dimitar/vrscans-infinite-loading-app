@@ -26,9 +26,9 @@ const VrScansList = () => {
   const limit = 10;
   // Using a query hook automatically fetches data and returns query values
   const { data, isFetching } = useGetVrScansWithFiltersQuery({
-    colors: selectedColors,
-    materials: selectedMaterials,
-    tags: selectedTags,
+    colors: selectedColors.map((colorObject) => colorObject.id),
+    materials: selectedMaterials.map((materialObject) => materialObject.id),
+    tags: selectedTags.map((tagsObject) => tagsObject.id),
     skip: 0,
     name: selectedName,
     limit: currentPage === 1 ? 30 : 30 + currentPage * limit
@@ -86,11 +86,9 @@ const VrScansList = () => {
           flexGrow: '1'
         }}
       >
-        {data?.vrscans?.length > 0 &&
-          !isFetching &&
-          data?.vrscans.map((vrScan, index) => {
-            return <VrScanItem key={Math.random()} vrScanObject={vrScan} />;
-          })}
+        {data?.vrscans.map((vrScan, index) => {
+          return <VrScanItem key={Math.random()} vrScanObject={vrScan} />;
+        })}
 
         {isFetching &&
           Array(limit)

@@ -1,7 +1,7 @@
 export interface FiltersState {
-  selectedTags: number[];
-  selectedColors: number[];
-  selectedMaterials: number[];
+  selectedTags: Array<{ id: number; name: string }>;
+  selectedColors: Array<{ id: number; name: string }>;
+  selectedMaterials: Array<{ id: number; name: string }>;
   searchName: string;
 }
 

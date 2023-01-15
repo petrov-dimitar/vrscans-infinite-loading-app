@@ -13,15 +13,25 @@ export const filtersSlice = createSlice({
   name: 'filters',
   initialState,
   reducers: {
-    addFilter: (state, action: PayloadAction<{ filterType: FilterType; id: number }>) => {
-      if (state[action.payload.filterType].includes(action.payload.id)) {
+    addFilter: (
+      state,
+      action: PayloadAction<{ filterType: FilterType; filterItem: { id: number; name: string } }>
+    ) => {
+      if (
+        state[action.payload.filterType].filter(
+          (stateFilter) => stateFilter.id === action.payload.filterItem.id
+        ).length > 0
+      ) {
         // Remove
         state[action.payload.filterType] = [...state[action.payload.filterType]].filter(
-          (el: number) => el !== action.payload.id
+          (el: any) => el.id !== action.payload.filterItem.id
         );
       } else {
         // Add
-        state[action.payload.filterType] = [...state[action.payload.filterType], action.payload.id];
+        state[action.payload.filterType] = [
+          ...state[action.payload.filterType],
+          action.payload.filterItem
+        ];
       }
     },
     updateSearch: (state, action: PayloadAction<{ name: string }>) => {
