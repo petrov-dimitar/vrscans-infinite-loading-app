@@ -41,7 +41,7 @@ const authSlice = createSlice({
     builder.addMatcher(
       authApi.endpoints.getUserByToken.matchFulfilled,
       (state, action: PayloadAction<any>) => {
-        const user = {...action.payload.data.currentUser};
+        const user = { ...action.payload.data.currentUser };
         user.subscription = action.payload.data.subscription;
 
         if (user) {
@@ -55,6 +55,21 @@ const authSlice = createSlice({
       authApi.endpoints.login.matchFulfilled,
       (state, action: PayloadAction<any>) => {
         const user = action.payload.user;
+        const token = action.payload.token;
+
+        setJWT(token);
+
+        if (user) {
+          state.user = user;
+          state.token = token;
+        }
+      }
+    );
+
+    builder.addMatcher(
+      authApi.endpoints.register.matchFulfilled,
+      (state, action: PayloadAction<any>) => {
+        const user = action.payload.data.user;
         const token = action.payload.token;
 
         setJWT(token);

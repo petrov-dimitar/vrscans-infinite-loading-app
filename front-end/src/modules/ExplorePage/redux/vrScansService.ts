@@ -5,10 +5,17 @@ export const vrScansApi = apiService.injectEndpoints({
   endpoints: (builder) => ({
     getVrScansWithFilters: builder.query<
       any,
-      { name?:string, limit?: number; skip?: number; materials?: number[]; colors?: number[]; tags?: number[] }
+      {
+        name?: string;
+        limit?: number;
+        skip?: number;
+        materials?: number[];
+        colors?: number[];
+        tags?: number[];
+      }
     >({
       query: (arg) => {
-        const { limit, skip, materials, colors, tags,name } = arg;
+        const { limit, skip, materials, colors, tags, name } = arg;
         return {
           url: `vrscans?${colors?.length ? 'colors=[' + colors + ']&' : ''}${
             tags?.length ? 'tags=[' + tags + ']&' : ''

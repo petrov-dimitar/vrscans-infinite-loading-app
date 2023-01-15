@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import VrScanItem from './VrScanItem';
 import { useSelector } from 'react-redux';
 import { RootState } from 'redux/store';
@@ -41,7 +41,7 @@ const VrScansList = () => {
     setCurrentPage(1);
   }, [selectedTags, selectedColors, selectedMaterials]);
 
-  const updatePage = useCallback(() => {
+  const updatePage = () => {
     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
     const finalPercentage = Math.round(((scrollTop + clientHeight) / scrollHeight) * 100);
 
@@ -49,7 +49,7 @@ const VrScansList = () => {
       setCurrentPage((prev) => prev + 1);
       window.removeEventListener('scroll', updatePage);
     }
-  }, []);
+  };
 
   useEffect(() => {
     window.addEventListener('scroll', updatePage, { passive: true });
@@ -57,37 +57,35 @@ const VrScansList = () => {
   }, []);
 
   return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(5, 20%)',
-        placeItems: 'center',
-        flexGrow: '1'
-      }}
-    >
-      {data?.vrscans.map((vrScan, index) => {
-        return (
-          <VrScanItem
-            key={vrScan.id}
-            vrScanObject={vrScan}
-          />
-        );
-      })}
-      {isFetching &&
-        Array(limit)
-          .fill()
-          .map((el, index) => (
-            <Stack spacing={1} key={index} direction="column">
-              {/* For variant="text", adjust the height via font-size */}
-              <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
+    <>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(5, 20%)',
+          gridTemplateRows: 'repeat(auto-fill, 250px)',
+          placeItems: 'top',
+          flexGrow: '1'
+        }}
+      >
+        {data?.vrscans.map((vrScan, index) => {
+          return <VrScanItem key={Math.random()} vrScanObject={vrScan} />;
+        })}
+        {isFetching &&
+          Array(limit)
+            .fill()
+            .map((el, index) => (
+              <Stack spacing={1} key={index} direction="column">
+                {/* For variant="text", adjust the height via font-size */}
+                <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
 
-              {/* For other variants, adjust the size with `width` and `height` */}
-              <Skeleton variant="circular" width={40} height={40} animation="wave" />
-              <Skeleton variant="rectangular" width={210} height={60} animation="wave" />
-              <Skeleton variant="rounded" width={210} height={60} animation="wave" />
-            </Stack>
-          ))}
-    </div>
+                {/* For other variants, adjust the size with `width` and `height` */}
+                <Skeleton variant="circular" width={40} height={40} animation="wave" />
+                <Skeleton variant="rectangular" width={210} height={60} animation="wave" />
+                <Skeleton variant="rounded" width={210} height={60} animation="wave" />
+              </Stack>
+            ))}
+      </div>
+    </>
   );
 };
 

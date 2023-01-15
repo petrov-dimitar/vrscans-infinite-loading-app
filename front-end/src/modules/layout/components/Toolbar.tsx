@@ -11,6 +11,7 @@ import { logout } from 'redux/auth.slice';
 import RegisterForm from '../../RegisterForm/RegisterComponent';
 import { Typography } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 export const Toolbar = () => {
   const selectedUser = useSelector((state: RootState) => state.auth.user);
@@ -69,7 +70,7 @@ export const Toolbar = () => {
             <>
               <Link to="/profile">
                 <ImageButton
-                  icon={<AccountCircleIcon/>}
+                  icon={<AccountCircleIcon />}
                   text={selectedUser.email}
                   textColor={currentPath && currentPath[0]?.pathname === '/profile' && activeColor}
                 />
@@ -79,6 +80,7 @@ export const Toolbar = () => {
                 onClick={() => {
                   dispatch(logout());
                 }}
+                icon={<ExitToAppIcon />}
               />
             </>
           ) : (
