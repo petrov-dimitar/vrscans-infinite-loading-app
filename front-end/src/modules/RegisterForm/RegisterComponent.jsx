@@ -1,6 +1,6 @@
 import React from 'react';
 import './registerForm.css';
-import { useLoginMutation } from 'redux/auth.service';
+import { useLoginMutation, useRegisterMutation } from 'redux/auth.service';
 import { toast } from 'react-toastify';
 import AppModal from 'modules/common/components/AppModal';
 import TextField from '@mui/material/TextField';
@@ -32,8 +32,16 @@ function TabPanel(props) {
 
 function withReduxHook(Component) {
   return function WrappedComponent(props) {
-    const [login, response] = useLoginMutation();
-    return <Component {...props} login={[login, response]} />;
+    const [login, loginResponse] = useLoginMutation();
+    const [register, registerResponse] = useRegisterMutation();
+
+    return (
+      <Component
+        {...props}
+        login={[login, loginResponse]}
+        register={[register, registerResponse]}
+      />
+    );
   };
 }
 class RegisterComponent extends React.Component {
@@ -148,6 +156,13 @@ class RegisterComponent extends React.Component {
     });
   };
 
+  sendRegisterCredentials = () => {
+    this.props.register[0]({
+      email: this.state.fields.email,
+      password: this.state.fields.password
+    });
+  };
+
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.login[1].isSuccess !== this.props.login[1].isSuccess) {
       if (this.props.login[1].isSuccess) {
@@ -156,9 +171,22 @@ class RegisterComponent extends React.Component {
       }
     }
 
+    if (prevProps.register[1].isSuccess !== this.props.register[1].isSuccess) {
+      if (this.props.register[1].isSuccess) {
+        toast.success('Successfully registered');
+        this.props.setIsModalOpen(false);
+      }
+    }
+
     if (prevProps.login[1].isError !== this.props.login[1].isError) {
       if (this.props.login[1].isError) {
         toast.error('Could not log you in!');
+      }
+    }
+
+    if (prevProps.register[1].isError !== this.props.register[1].isError) {
+      if (this.props.register[1].isError) {
+        toast.error('Could not register you!');
       }
     }
   }
@@ -288,7 +316,11 @@ class RegisterComponent extends React.Component {
                     marginTop: '24px'
                   }}
                 >
-                  <Button variant="contained" disableElevation>
+                  <Button
+                    onClick={this.sendRegisterCredentials}
+                    variant="contained"
+                    disableElevation
+                  >
                     Register
                   </Button>
                 </div>

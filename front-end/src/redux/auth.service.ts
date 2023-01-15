@@ -10,6 +10,13 @@ export const authApi = apiService.injectEndpoints({
         body: credentials
       })
     }),
+    register: builder.mutation({
+      query: (credentials) => ({
+        url: '/signup',
+        method: 'POST',
+        body: credentials
+      })
+    }),
     getUserByToken: builder.query({
       query: () => ({
         url: '/user_by_token',
@@ -21,4 +28,4 @@ export const authApi = apiService.injectEndpoints({
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useLoginMutation, useGetUserByTokenQuery } = authApi;
+export const { useLoginMutation, useRegisterMutation, useGetUserByTokenQuery } = authApi;
