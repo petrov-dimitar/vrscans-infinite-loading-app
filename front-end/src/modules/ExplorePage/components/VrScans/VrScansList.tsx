@@ -5,6 +5,7 @@ import { RootState } from 'redux/store';
 import { useGetVrScansWithFiltersQuery } from 'modules/ExplorePage/redux/vrScansService';
 import { Skeleton } from '@mui/material';
 import { Stack } from '@mui/system';
+import Typography from '@mui/material/Typography';
 
 export interface VrScan {
   id: Number;
@@ -57,7 +58,25 @@ const VrScansList = () => {
   }, []);
 
   return (
-    <>
+    <div
+      style={{
+        padding: '16px',
+        width: '100%'
+      }}
+    >
+      {!!data && data?.vrscans?.length === 0 && (
+        <Typography
+          sx={{
+            fontFamily: 'Clash Grotesk Variable',
+            fontStyle: 'normal',
+            fontWeight: 300,
+            fontSize: '40px',
+            lineHeight: '18px'
+          }}
+        >
+          UPS.. Your search produced no results.
+        </Typography>
+      )}
       <div
         style={{
           display: 'grid',
@@ -67,9 +86,12 @@ const VrScansList = () => {
           flexGrow: '1'
         }}
       >
-        {data?.vrscans.map((vrScan, index) => {
-          return <VrScanItem key={Math.random()} vrScanObject={vrScan} />;
-        })}
+        {data?.vrscans?.length > 0 &&
+          !isFetching &&
+          data?.vrscans.map((vrScan, index) => {
+            return <VrScanItem key={Math.random()} vrScanObject={vrScan} />;
+          })}
+
         {isFetching &&
           Array(limit)
             .fill()
@@ -85,7 +107,7 @@ const VrScansList = () => {
               </Stack>
             ))}
       </div>
-    </>
+    </div>
   );
 };
 
