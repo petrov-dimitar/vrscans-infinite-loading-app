@@ -13,6 +13,8 @@ import FavoritesPage from 'modules/Favorites';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import ProfilePage from 'modules/Profile';
+import { theme } from 'modules/common/theme/materialTheme';
+import { ThemeProvider } from '@mui/material/styles';
 
 const ProtectedRoute: React.FC<any> = () => {
   const { isFetching } = useGetUserByTokenQuery({});
@@ -27,20 +29,22 @@ const App = () => {
     <>
       <ToastContainer hideProgressBar theme="colored" autoClose={5000} position="top-center" />
       <Router basename="/lazy-loading-vrscans-library">
-        <Layout>
-          <Routes>
-            <Route path="/explore" element={<VrScansList />} />
-            <Route path="/not-authorized" element={<NotAuthorizedPage />} />
-            <Route path="/profile" element={<ProtectedRoute />}>
-              <Route path="/profile" element={<ProfilePage />} />
-            </Route>
-            <Route path="/login" element={<RegisterComponent />} />
-            <Route path="/favorites" element={<ProtectedRoute />}>
-              <Route path="/favorites" element={<FavoritesPage />} />
-            </Route>
-            {/* <Route path="*" element={<Navigate to="/explore" replace />} /> */}
-          </Routes>
-        </Layout>
+        <ThemeProvider theme={theme}>
+          <Layout>
+            <Routes>
+              <Route path="/explore" element={<VrScansList />} />
+              <Route path="/not-authorized" element={<NotAuthorizedPage />} />
+              <Route path="/profile" element={<ProtectedRoute />}>
+                <Route path="/profile" element={<ProfilePage />} />
+              </Route>
+              <Route path="/login" element={<RegisterComponent />} />
+              <Route path="/favorites" element={<ProtectedRoute />}>
+                <Route path="/favorites" element={<FavoritesPage />} />
+              </Route>
+              {/* <Route path="*" element={<Navigate to="/explore" replace />} /> */}
+            </Routes>
+          </Layout>
+        </ThemeProvider>
       </Router>
     </>
   );
