@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import SafariIcon from 'assets/safari.svg';
-import HeartIcon from 'assets/heart-solid.svg';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import UserIcon from 'assets/user-regular.svg';
 import { ImageButton } from 'modules/common/components/ImageButton';
 import { Link } from 'react-router-dom';
@@ -12,12 +11,15 @@ import RegisterForm from '../../RegisterForm/RegisterComponent';
 import { Typography } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import { useTheme } from '@mui/material/styles';
+import ExploreIcon from '@mui/icons-material/Explore';
 
 export const Toolbar = () => {
   const selectedUser = useSelector((state: RootState) => state.auth.user);
+  const theme = useTheme();
 
   const currentPath = useCurrentPath();
-  const activeColor = 'red';
+  const activeColor = theme.palette.primary.main;
 
   const dispatch = useDispatch();
 
@@ -52,17 +54,39 @@ export const Toolbar = () => {
         >
           <Link to="/explore">
             <ImageButton
-              src={SafariIcon}
+              icon={
+                <ExploreIcon
+                  sx={{
+                    fill:
+                      currentPath && currentPath[0]?.pathname === '/explore'
+                        ? theme.palette.primary.main
+                        : 'black'
+                  }}
+                />
+              }
               text="Explore"
-              textColor={currentPath && currentPath[0]?.pathname === '/explore' && activeColor}
+              textColor={
+                currentPath && currentPath[0]?.pathname === '/explore' ? activeColor : 'black'
+              }
             />
           </Link>
 
           <Link to="/favorites">
             <ImageButton
-              src={HeartIcon}
+              icon={
+                <FavoriteIcon
+                  sx={{
+                    fill:
+                      currentPath && currentPath[0]?.pathname === '/favorites'
+                        ? theme.palette.primary.main
+                        : 'black'
+                  }}
+                />
+              }
               text="Favorites"
-              textColor={currentPath && currentPath[0]?.pathname === '/favorites' && activeColor}
+              textColor={
+                currentPath && currentPath[0]?.pathname === '/favorites' ? activeColor : 'black'
+              }
             />
           </Link>
 
@@ -70,9 +94,20 @@ export const Toolbar = () => {
             <>
               <Link to="/profile">
                 <ImageButton
-                  icon={<AccountCircleIcon />}
+                  icon={
+                    <AccountCircleIcon
+                      sx={{
+                        fill:
+                          currentPath && currentPath[0]?.pathname === '/profile'
+                            ? theme.palette.primary.main
+                            : 'black'
+                      }}
+                    />
+                  }
                   text={selectedUser.email}
-                  textColor={currentPath && currentPath[0]?.pathname === '/profile' && activeColor}
+                  textColor={
+                    currentPath && currentPath[0]?.pathname === '/profile' ? activeColor : 'black'
+                  }
                 />
               </Link>
               <ImageButton
