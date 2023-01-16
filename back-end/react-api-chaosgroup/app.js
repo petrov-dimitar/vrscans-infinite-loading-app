@@ -16,7 +16,7 @@ app.use(cors());
 
 // app.use(express.static("public"));
 // app.use(express.urlencoded({ extended: true }));
-// app.use(express.json());
+app.use("/webhook", express.json());
 
 // require("child_process").fork("seedVrScansScript.js"); //change the path depending on where the file is.
 
@@ -404,76 +404,83 @@ app.post("/create-portal-session", async (req, res) => {
   res.redirect(303, portalSession.url);
 });
 
-app.post("/webhook", express.raw({ type: "*/*" }), express.json(), async (req, response) => {
-  console.log("inside webhook");
-  let event = req.body;
-  // Replace this endpoint secret with your endpoint's unique secret
-  // If you are testing with the CLI, find the secret by running 'stripe listen'
-  // If you are using an endpoint defined with the API or dashboard, look in your webhook settings
-  // at https://dashboard.stripe.com/webhooks
-  const endpointSecret = process.env.STRIPE_ENDPOINT_SECRET;
-  // Only verify the event if you have an endpoint secret defined.
-  // Otherwise use the basic event deserialized with JSON.parse
-  if (endpointSecret) {
-    // Get the signature sent by Stripe
-    const signature = req.headers["stripe-signature"];
-    console.log("signature", signature);
-    console.log("req.body", event);
-    try {
-      event = stripe.webhooks.constructEvent(
-        req.body,
-        signature,
-        endpointSecret
-      );
-    } catch (err) {
-      console.log(`⚠️  Webhook signature verification failed.`, err.message);
-      return response.sendStatus(400);
+app.post(
+  "/webhook",
+  express.raw({ type: "*/*" }),
+  express.json(),
+  async (req, response) => {
+    console.log("inside webhook");
+    let event = req.body;
+    // Replace this endpoint secret with your endpoint's unique secret
+    // If you are testing with the CLI, find the secret by running 'stripe listen'
+    // If you are using an endpoint defined with the API or dashboard, look in your webhook settings
+    // at https://dashboard.stripe.com/webhooks
+    const endpointSecret = process.env.STRIPE_ENDPOINT_SECRET;
+    // Only verify the event if you have an endpoint secret defined.
+    // Otherwise use the basic event deserialized with JSON.parse
+    if (endpointSecret) {
+      // Get the signature sent by Stripe
+      const signature = req.headers["stripe-signature"];
+      console.log("signature", signature);
+      console.log("req.body", event);
+      try {
+        event = stripe.webhooks.constructEvent(
+          req.body,
+          signature,
+          endpointSecret
+        );
+      } catch (err) {
+        console.log(`⚠️  Webhook signature verification failed.`, err.message);
+        return response.sendStatus(400);
+      }
     }
+    let subscription;
+    let status;
+    // Handle the event
+    switch (event.type) {
+      case "customer.subscription.trial_will_end":
+        subscription = event.data.object;
+        status = subscription.status;
+        console.log(`Subscription status is ${status}.`);
+        // Then define and call a method to handle the subscription trial ending.
+        // handleSubscriptionTrialEnding(subscription);
+        break;
+      case "customer.subscription.deleted":
+        subscription = event.data.object;
+        status = subscription.status;
+        console.log(`Subscription status is ${status}.`);
+        // Then define and call a method to handle the subscription deleted.
+        // handleSubscriptionDeleted(subscriptionDeleted);
+        break;
+      case "customer.subscription.created":
+        subscription = event.data.object;
+        status = subscription.status;
+        console.log(`Subscription status is ${status}.`);
+        // Then define and call a method to handle the subscription created.
+        // handleSubscriptionCreated(subscription);
+        break;
+      case "checkout.session.completed":
+        let data = event.data.object;
+        console.log(`data is ${JSON.stringify(data)}.`);
+
+        const user = await UserModel.findOne({
+          email: data.metadata.userEmail,
+        });
+
+        await UserModel.updateOne(user, {
+          stripeCustomer: data.customer,
+          subscriptionId: data.subscription,
+        });
+        break;
+
+      default:
+        // Unexpected event type
+        console.log(`Unhandled event type ${event.type}.`);
+    }
+    // Return a 200 response to acknowledge receipt of the event
+    response.send();
   }
-  let subscription;
-  let status;
-  // Handle the event
-  switch (event.type) {
-    case "customer.subscription.trial_will_end":
-      subscription = event.data.object;
-      status = subscription.status;
-      console.log(`Subscription status is ${status}.`);
-      // Then define and call a method to handle the subscription trial ending.
-      // handleSubscriptionTrialEnding(subscription);
-      break;
-    case "customer.subscription.deleted":
-      subscription = event.data.object;
-      status = subscription.status;
-      console.log(`Subscription status is ${status}.`);
-      // Then define and call a method to handle the subscription deleted.
-      // handleSubscriptionDeleted(subscriptionDeleted);
-      break;
-    case "customer.subscription.created":
-      subscription = event.data.object;
-      status = subscription.status;
-      console.log(`Subscription status is ${status}.`);
-      // Then define and call a method to handle the subscription created.
-      // handleSubscriptionCreated(subscription);
-      break;
-    case "checkout.session.completed":
-      let data = event.data.object;
-      console.log(`data is ${JSON.stringify(data)}.`);
-
-      const user = await UserModel.findOne({ email: data.metadata.userEmail });
-
-      await UserModel.updateOne(user, {
-        stripeCustomer: data.customer,
-        subscriptionId: data.subscription,
-      });
-      break;
-
-    default:
-      // Unexpected event type
-      console.log(`Unhandled event type ${event.type}.`);
-  }
-  // Return a 200 response to acknowledge receipt of the event
-  response.send();
-});
+);
 
 // Start server
 const port = process.env.PORT || 1337;

@@ -14,8 +14,6 @@ const VrScansList = () => {
   // Using a query hook automatically fetches data and returns query values
   const { data } = useGetFavoritesScansForUserQuery({});
 
-  console.log('data', data)
-
   return (
     <div
       style={{

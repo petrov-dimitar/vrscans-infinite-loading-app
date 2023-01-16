@@ -6,6 +6,9 @@ import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import RegisterForm from 'modules/RegisterForm/RegisterComponent';
 import { RootState } from '@reduxjs/toolkit/dist/query/core/apiState';
+import AppModal from 'modules/common/components/AppModal';
+import { ProductDisplay } from 'modules/Subscription/components/ProductDisplay';
+import Alert from '@mui/material/Alert';
 
 export interface VrScan {
   id: Number;
@@ -18,19 +21,18 @@ export interface VrScan {
 const VrScanItem = ({ vrScanObject }: { vrScanObject: VrScan }) => {
   const selectedUser = useSelector((state: RootState) => state.auth.user);
   const [isRegisterModalOpen, setIsRegisterModelOpen] = useState(false);
+  const [isSubscribedModalOpen, setIsSubscribedModelOpen] = useState(false);
 
-  const [addScanToFavorites, { isError, isSuccess, error }] = useAddScanToUserFavoritesMutation();
+  const [addScanToFavorites, { isError, isSuccess }] = useAddScanToUserFavoritesMutation();
   useEffect(() => {
     if (isSuccess) {
-      console.log('success');
       toast.success('Successfully added scan to Favorties.');
     }
   }, [isSuccess]);
 
   useEffect(() => {
     if (isError) {
-      console.log('error');
-      toast.error(error.data.message);
+      setIsSubscribedModelOpen(true);
     }
   }, [isError]);
 
@@ -50,6 +52,15 @@ const VrScanItem = ({ vrScanObject }: { vrScanObject: VrScan }) => {
           setIsModalOpen={setIsRegisterModelOpen}
           customTitle="Hi, login to your account to like scans!"
         ></RegisterForm>
+
+        <AppModal open={isSubscribedModalOpen} setOpen={setIsSubscribedModelOpen}>
+          <Alert severity="error">
+            Ups.. it looks like you have reached your free limit of 5 favorite scans. Subscribe for
+            unlimited!
+          </Alert>
+
+          <ProductDisplay />
+        </AppModal>
         <div
           style={{
             textAlign: 'center'

@@ -64,7 +64,6 @@ class RegisterComponent extends React.Component {
   };
 
   toggleSignInForm = () => {
-    console.log('Here');
     const showSignUpCurrValue = this.state.showSignUp;
 
     this.setState({
@@ -148,8 +147,6 @@ class RegisterComponent extends React.Component {
   };
 
   sendLoginCredentials = () => {
-    console.log('send login credentials');
-    console.log('props', this.props);
     this.props.login[0]({
       email: this.state.fields.email,
       password: this.state.fields.password

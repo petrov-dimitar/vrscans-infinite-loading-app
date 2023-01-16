@@ -34,10 +34,6 @@ const FiltersContainer = () => {
   const selectedMaterials = useSelector((state: RootState) => state.filters.selectedMaterials);
   const showClearFilters = useSelector((state: RootState) => areFiltersSelected(state.filters));
 
-  console.log('selectedTags', selectedTags);
-  console.log('selectedColors', selectedColors);
-  console.log('selectedMaterials', selectedMaterials);
-
   return (
     <div
       style={{
