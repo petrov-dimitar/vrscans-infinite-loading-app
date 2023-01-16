@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import UserIcon from 'assets/user-regular.svg';
 import { ImageButton } from 'modules/common/components/ImageButton';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -14,6 +13,7 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useTheme } from '@mui/material/styles';
 import ExploreIcon from '@mui/icons-material/Explore';
 import VRIcon from 'assets/vr-headset-icon.svg';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 
 export const Toolbar = () => {
   const selectedUser = useSelector((state: RootState) => state.auth.user);
@@ -95,24 +95,26 @@ export const Toolbar = () => {
             />
           </Link>
 
-          <Link to="/favorites">
-            <ImageButton
-              icon={
-                <FavoriteIcon
-                  sx={{
-                    fill:
-                      currentPath && currentPath[0]?.pathname === '/favorites'
-                        ? theme.palette.primary.main
-                        : 'black'
-                  }}
-                />
-              }
-              text="Favorites"
-              textColor={
-                currentPath && currentPath[0]?.pathname === '/favorites' ? activeColor : 'black'
-              }
-            />
-          </Link>
+          {selectedUser && (
+            <Link to="/favorites">
+              <ImageButton
+                icon={
+                  <FavoriteIcon
+                    sx={{
+                      fill:
+                        currentPath && currentPath[0]?.pathname === '/favorites'
+                          ? theme.palette.primary.main
+                          : 'black'
+                    }}
+                  />
+                }
+                text="Favorites"
+                textColor={
+                  currentPath && currentPath[0]?.pathname === '/favorites' ? activeColor : 'black'
+                }
+              />
+            </Link>
+          )}
 
           {selectedUser ? (
             <>
@@ -143,15 +145,13 @@ export const Toolbar = () => {
               />
             </>
           ) : (
-            // <Link to="/login">
             <ImageButton
-              src={UserIcon}
+              icon={<PersonAddAltIcon />}
               text="Login"
               onClick={() => {
                 setIsRegisterModelOpen(true);
               }}
             />
-            // </Link>
           )}
         </div>
       </div>
