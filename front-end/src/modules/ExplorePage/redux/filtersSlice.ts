@@ -36,11 +36,31 @@ export const filtersSlice = createSlice({
     },
     updateSearch: (state, action: PayloadAction<{ name: string }>) => {
       state.searchName = action.payload.name;
+    },
+    removeFilter: (
+      state,
+      action: PayloadAction<{ filterType: FilterType; filterItem: { id: number; name: string } }>
+    ) => {
+      // Remove
+      state[action.payload.filterType] = [...state[action.payload.filterType]].filter(
+        (el: any) => el.id !== action.payload.filterItem.id
+      );
+    },
+    clearFilters: (state) => {
+      // Clear all filters
+      state.selectedColors = [];
+      state.selectedTags = [];
+      state.selectedMaterials = [];
     }
   }
 });
 
+export const areFiltersSelected = (state) =>
+  state.selectedColors.length > 0 ||
+  state.selectedMaterials.length > 0 ||
+  state.selectedTags.length > 0;
+
 // Action creators are generated for each case reducer function
-export const { addFilter, updateSearch } = filtersSlice.actions;
+export const { addFilter, removeFilter, updateSearch, clearFilters } = filtersSlice.actions;
 
 export default filtersSlice.reducer;

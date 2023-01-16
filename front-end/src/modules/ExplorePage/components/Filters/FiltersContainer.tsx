@@ -1,7 +1,13 @@
 import React from 'react';
 import FiltersComponent from './FiltersComponent';
 import { useDispatch, useSelector } from 'react-redux';
-import { addFilter, updateSearch } from 'modules/ExplorePage/redux/filtersSlice';
+import {
+  addFilter,
+  removeFilter,
+  updateSearch,
+  clearFilters,
+  areFiltersSelected
+} from 'modules/ExplorePage/redux/filtersSlice';
 import {
   useGetColorsFiltersQuery,
   useGetMaterialsFiltersQuery,
@@ -14,6 +20,7 @@ import CheckBox from '@mui/material/Checkbox';
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import { RootState } from '@reduxjs/toolkit/dist/query/core/apiState';
 import FiltersChip from './FiltersChip';
+import { Typography } from '@mui/material';
 
 const FiltersContainer = () => {
   const dispatch = useDispatch();
@@ -24,8 +31,8 @@ const FiltersContainer = () => {
 
   const selectedTags = useSelector((state: RootState) => state.filters.selectedTags);
   const selectedColors = useSelector((state: RootState) => state.filters.selectedColors);
-
   const selectedMaterials = useSelector((state: RootState) => state.filters.selectedMaterials);
+  const showClearFilters = useSelector((state: RootState) => areFiltersSelected(state.filters));
 
   console.log('selectedTags', selectedTags);
   console.log('selectedColors', selectedColors);
@@ -52,15 +59,112 @@ const FiltersContainer = () => {
         }}
       />
       <div>
-        <h3>Selected</h3>
+        <div
+          style={{
+            marginTop: '8px'
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}
+          >
+            <Typography
+              sx={{
+                fontFamily: 'Plus Jakarta Sans',
+                fontStyle: 'normal',
+                fontWeight: 600,
+                fontSize: '18px',
+                lineHeight: '23px',
+                letterSpacing: '0.02em',
+                textTransform: 'uppercase',
+                color: '#090C02'
+              }}
+            >
+              Selected
+            </Typography>
+
+            {showClearFilters && (
+              <Button
+                sx={{
+                  textTransform: 'lowercase',
+                  fontFamily: 'Plus Jakarta Sans',
+                  fontStyle: 'normal',
+                  fontWeight: 200,
+                  fontSize: '18px',
+                  lineHeight: '23px',
+                  textAlign: 'center',
+                  textDecoration: 'underline',
+                  color: '#7E7F9A'
+                }}
+                onClick={() => {
+                  dispatch(clearFilters());
+                }}
+              >
+                Clear All
+              </Button>
+            )}
+          </div>
+
+          {!showClearFilters && (
+            <Typography
+              sx={{
+                fontFamily: 'Fira Sans',
+                fontStyle: 'normal',
+                fontWeight: 275,
+                fontSize: '12px',
+                lineHeight: '14px',
+                color: '#7E7F9A'
+              }}
+            >
+              You have not selected any filters.
+            </Typography>
+          )}
+        </div>
+
         {selectedTags.map((tag) => (
-          <FiltersChip key={tag.id} label={tag.name} />
+          <FiltersChip
+            key={tag.id}
+            label={tag.name}
+            handleDelete={() =>
+              dispatch(
+                removeFilter({
+                  filterType: FilterType.selectedTags,
+                  filterItem: tag
+                })
+              )
+            }
+          />
         ))}
         {selectedColors.map((color) => (
-          <FiltersChip key={color.id} label={color.name} />
+          <FiltersChip
+            key={color.id}
+            label={color.name}
+            handleDelete={() =>
+              dispatch(
+                removeFilter({
+                  filterType: FilterType.selectedColors,
+                  filterItem: color
+                })
+              )
+            }
+          />
         ))}
         {selectedMaterials.map((material) => (
-          <FiltersChip key={material.id} label={material.name} />
+          <FiltersChip
+            key={material.id}
+            label={material.name}
+            handleDelete={() =>
+              dispatch(
+                removeFilter({
+                  filterType: FilterType.selectedMaterials,
+                  filterItem: material
+                })
+              )
+            }
+          />
         ))}
       </div>
       <FiltersComponent title="Material">
@@ -83,16 +187,16 @@ const FiltersContainer = () => {
             }}
             color="neutral"
             fullWidth={true}
-            disabled={selectedTags.filter((tag) => filterItem.id === tag.id).length > 0}
+            disabled={selectedMaterials.filter((tag) => filterItem.id === tag.id).length > 0}
             onClick={(e) => {
-              dispatch(addFilter({ filterType: FilterType.selectedTags, filterItem }));
+              dispatch(addFilter({ filterType: FilterType.selectedMaterials, filterItem }));
             }}
           >
             <CheckBox
               sx={{
                 padding: '0px'
               }}
-              checked={selectedTags.filter((tag) => filterItem.id === tag.id).length > 0}
+              checked={selectedMaterials.filter((tag) => filterItem.id === tag.id).length > 0}
             />{' '}
             {filterItem.name}
           </Button>
@@ -118,16 +222,16 @@ const FiltersContainer = () => {
             }}
             color="neutral"
             fullWidth={true}
-            disabled={selectedTags.filter((tag) => filterItem.id === tag.id).length > 0}
+            disabled={selectedColors.filter((tag) => filterItem.id === tag.id).length > 0}
             onClick={(e) => {
-              dispatch(addFilter({ filterType: FilterType.selectedTags, filterItem }));
+              dispatch(addFilter({ filterType: FilterType.selectedColors, filterItem }));
             }}
           >
             <CheckBox
               sx={{
                 padding: '0px'
               }}
-              checked={selectedTags.filter((tag) => filterItem.id === tag.id).length > 0}
+              checked={selectedColors.filter((tag) => filterItem.id === tag.id).length > 0}
             />{' '}
             {filterItem.name}
             <span
