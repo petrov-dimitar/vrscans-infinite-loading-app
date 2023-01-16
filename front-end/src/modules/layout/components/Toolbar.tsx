@@ -13,6 +13,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useTheme } from '@mui/material/styles';
 import ExploreIcon from '@mui/icons-material/Explore';
+import VRIcon from 'assets/vr-headset-icon.svg';
 
 export const Toolbar = () => {
   const selectedUser = useSelector((state: RootState) => state.auth.user);
@@ -43,8 +44,31 @@ export const Toolbar = () => {
           marginBottom: '16px'
         }}
       >
-        <Link to="/">
-          <Typography variant="h4">SCAO</Typography>
+        <Link to="/explore">
+          <Typography
+            sx={{
+              fontFamily: 'Clash Grotesk Variable',
+              fontStyle: 'normal',
+              fontWeight: 700,
+              fontSize: '32px',
+              lineHeight: '32px',
+              color: '#090C02',
+              marginLeft: '32px',
+              textTransform: 'none'
+            }}
+          >
+            VRscans
+            <img
+              style={{
+                position: 'absolute',
+                left: '150px',
+                top: '12px'
+              }}
+              height="20px"
+              width="20px"
+              src={VRIcon}
+            />
+          </Typography>
         </Link>
 
         <div
