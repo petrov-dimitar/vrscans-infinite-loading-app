@@ -1,4 +1,6 @@
+import { Button } from '@mui/material';
 import React from 'react';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 export interface VrScan {
   id: Number;
   name: String;
@@ -11,8 +13,11 @@ const VrScanItem = ({ vrScanObject }: { vrScanObject: VrScan }) => {
   return (
     <div
       style={{
-        padding: `8px`,
-        maxWidth: '195px'
+        margin: `8px`,
+        padding: `16px`,
+        width: '195px',
+        background: 'white',
+        borderRadius: '8px'
       }}
     >
       <img width="100%" src={vrScanObject.thumb} />
@@ -24,12 +29,25 @@ const VrScanItem = ({ vrScanObject }: { vrScanObject: VrScan }) => {
         }}
       >
         <div>{vrScanObject.name}</div>
-        <div>
-          remove
-        </div>
       </div>
-      <div>{vrScanObject.manufacturerId}</div>
-      <div>{vrScanObject.fileName}</div>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          paddingTop: '8px'
+        }}
+      >
+        <Button
+          variant="outlined"
+          endIcon={<RemoveCircleOutlineIcon />}
+          sx={{
+            color: 'red',
+            borderColor: 'red'
+          }}
+        >
+          Remove
+        </Button>
+      </div>
     </div>
   );
 };

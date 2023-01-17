@@ -21,7 +21,8 @@ export const authApi = apiService.injectEndpoints({
       query: () => ({
         url: '/user_by_token',
         method: 'GET'
-      })
+      }),
+      providesTags: ['USER']
     })
   })
 });
