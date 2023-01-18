@@ -14,7 +14,7 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 
-// app.use(express.static("public"));
+app.use("/upload", express.static("public"));
 // app.use(express.urlencoded({ extended: true }));
 app.use("/webhook", express.raw({ type: "application/json" }));
 
@@ -34,6 +34,36 @@ mongoose.set("strictQuery", false);
 
 mongoose.connect(DB).then((con) => {
   console.log("DB Connection success");
+});
+
+// Image upload
+const fileUpload = require("express-fileupload");
+app.use(
+  fileUpload({
+    limits: {
+      fileSize: 10000000, // Around 10MB
+    },
+    abortOnLimit: true,
+  })
+);
+app.post("/upload", (req, res) => {
+  const { image } = req.files;
+
+  if (!image) return res.sendStatus(400);
+
+  // If does not have image mime type prevent from uploading
+  // if (/^image/.test(image.mimetype)) return res.sendStatus(400);
+
+  image.mv(__dirname + "/upload/" + image.name);
+  res.status(200).json({
+    imageName: image.name,
+    imageUrl: "/upload/" + image.name,
+  });
+});
+
+app.get("/image/:name", function (req, res) {
+  const { name } = req.params;
+  res.sendFile(__dirname + "/upload/" + name);
 });
 
 app.post(
