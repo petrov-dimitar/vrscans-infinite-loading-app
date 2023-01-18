@@ -64,7 +64,6 @@ class RegisterComponent extends React.Component {
   };
 
   toggleSignInForm = () => {
-    console.log('Here');
     const showSignUpCurrValue = this.state.showSignUp;
 
     this.setState({
@@ -148,8 +147,6 @@ class RegisterComponent extends React.Component {
   };
 
   sendLoginCredentials = () => {
-    console.log('send login credentials');
-    console.log('props', this.props);
     this.props.login[0]({
       email: this.state.fields.email,
       password: this.state.fields.password
@@ -192,6 +189,9 @@ class RegisterComponent extends React.Component {
   }
 
   render() {
+    if (!this.props.setIsModalOpen) {
+      return null;
+    }
     return (
       <AppModal open={this.props.isModalOpen} setOpen={() => this.props.setIsModalOpen(false)}>
         <div id="main-registration-container">
@@ -206,7 +206,7 @@ class RegisterComponent extends React.Component {
                 color: '#000000'
               }}
             >
-              Hi There, welcome to SCAO
+              {this.props.customTitle || 'Hi There, welcome to SCAO'}
             </h1>
 
             <Box sx={{ width: '100%' }}>

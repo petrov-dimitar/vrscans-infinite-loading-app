@@ -5,6 +5,7 @@ import { RootState } from 'redux/store';
 import { useGetVrScansWithFiltersQuery } from 'modules/ExplorePage/redux/vrScansService';
 import { Skeleton } from '@mui/material';
 import { Stack } from '@mui/system';
+import Typography from '@mui/material/Typography';
 
 export interface VrScan {
   id: Number;
@@ -25,9 +26,9 @@ const VrScansList = () => {
   const limit = 10;
   // Using a query hook automatically fetches data and returns query values
   const { data, isFetching } = useGetVrScansWithFiltersQuery({
-    colors: selectedColors,
-    materials: selectedMaterials,
-    tags: selectedTags,
+    colors: selectedColors.map((colorObject) => colorObject.id),
+    materials: selectedMaterials.map((materialObject) => materialObject.id),
+    tags: selectedTags.map((tagsObject) => tagsObject.id),
     skip: 0,
     name: selectedName,
     limit: currentPage === 1 ? 30 : 30 + currentPage * limit
@@ -57,7 +58,25 @@ const VrScansList = () => {
   }, []);
 
   return (
-    <>
+    <div
+      style={{
+        padding: '16px',
+        width: '100%'
+      }}
+    >
+      {!!data && data?.vrscans?.length === 0 && (
+        <Typography
+          sx={{
+            fontFamily: 'Clash Grotesk Variable',
+            fontStyle: 'normal',
+            fontWeight: 300,
+            fontSize: '40px',
+            lineHeight: '18px'
+          }}
+        >
+          UPS.. Your search produced no results.
+        </Typography>
+      )}
       <div
         style={{
           display: 'grid',
@@ -70,6 +89,7 @@ const VrScansList = () => {
         {data?.vrscans.map((vrScan, index) => {
           return <VrScanItem key={Math.random()} vrScanObject={vrScan} />;
         })}
+
         {isFetching &&
           Array(limit)
             .fill()
@@ -85,7 +105,7 @@ const VrScansList = () => {
               </Stack>
             ))}
       </div>
-    </>
+    </div>
   );
 };
 

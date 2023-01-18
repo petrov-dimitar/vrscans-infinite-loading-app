@@ -1,8 +1,15 @@
-import React, { useEffect } from 'react';
-import HeartIcon from 'assets/heart-solid.svg';
-import { ImageButton } from 'modules/common/components/ImageButton';
+import React, { useEffect, useState } from 'react';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useAddScanToUserFavoritesMutation } from 'modules/ExplorePage/redux/vrScansService';
 import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
+import RegisterForm from 'modules/RegisterForm/RegisterComponent';
+import { RootState } from '@reduxjs/toolkit/dist/query/core/apiState';
+import AppModal from 'modules/common/components/AppModal';
+import { ProductDisplay } from 'modules/Subscription/components/ProductDisplay';
+import Alert from '@mui/material/Alert';
+import { Button } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export interface VrScan {
   id: Number;
@@ -13,58 +20,108 @@ export interface VrScan {
 }
 
 const VrScanItem = ({ vrScanObject }: { vrScanObject: VrScan }) => {
-  const [addScanToFavorites, { isError, isSuccess, error }] = useAddScanToUserFavoritesMutation();
+  const selectedUser = useSelector((state: RootState) => state.auth.user);
+  const [isRegisterModalOpen, setIsRegisterModelOpen] = useState(false);
+  const [isSubscribedModalOpen, setIsSubscribedModelOpen] = useState(false);
+
+  console.log('selectedUser', selectedUser);
+
+  const [isItemFavorited, setIsItemFavorited] = useState(
+    () => selectedUser?.favorites?.filter((favItem) => favItem.id === vrScanObject.id).length > 0
+  );
+
+  const [addScanToFavorites, { isError, isSuccess, isLoading }] =
+    useAddScanToUserFavoritesMutation();
   useEffect(() => {
     if (isSuccess) {
-      console.log('success');
       toast.success('Successfully added scan to Favorties.');
+      setIsItemFavorited(true);
     }
   }, [isSuccess]);
 
   useEffect(() => {
     if (isError) {
-      console.log('error');
-      toast.error(error.data.message);
+      setIsSubscribedModelOpen(true);
     }
   }, [isError]);
 
-  return (
-    <div
-      style={{
-        margin: `8px`,
-        padding: `8px`,
-        width: '195px',
-        background: 'white'
-      }}
-      data-cy={'explorepageContainer'}
-    >
-      <div
-        style={{
-          textAlign: 'center'
-        }}
-      >
-        <img width="70%" src={vrScanObject.thumb} />
-      </div>
+  useEffect(() => {
+    if (!selectedUser) {
+      setIsItemFavorited(false);
+    }
+  }, [selectedUser]);
 
+  return (
+    <>
       <div
         style={{
-          display: 'flex',
-          justifyContent: 'space-between'
+          margin: `8px`,
+          padding: `16px`,
+          width: '195px',
+          background: 'white',
+          borderRadius: '8px'
         }}
+        data-cy={'explorepageContainer'}
       >
-        <div>{vrScanObject.name}</div>
+        <RegisterForm
+          isModalOpen={isRegisterModalOpen}
+          setIsModalOpen={setIsRegisterModelOpen}
+          customTitle="Hi, login to your account to like scans!"
+        ></RegisterForm>
+
+        <AppModal open={isSubscribedModalOpen} setOpen={setIsSubscribedModelOpen}>
+          <Alert severity="error">
+            Ups.. it looks like you have reached your free limit of 5 favorite scans. Subscribe for
+            unlimited!
+          </Alert>
+
+          <ProductDisplay />
+        </AppModal>
+        <div
+          style={{
+            textAlign: 'center'
+          }}
+        >
+          <img width="70%" src={vrScanObject.thumb} />
+        </div>
+
         <div>
-          <ImageButton
-            src={HeartIcon}
-            onClick={() => {
-              addScanToFavorites(vrScanObject);
+          <div>{vrScanObject.name}</div>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              paddingTop: '8px'
             }}
-          />
+          >
+            {!isLoading ? (
+              <Button
+                variant={!isItemFavorited ? 'outlined' : 'standard'}
+                endIcon={
+                  <FavoriteIcon
+                    sx={{
+                      fill: isItemFavorited && 'green'
+                    }}
+                  />
+                }
+                onClick={() => {
+                  if (selectedUser) {
+                    addScanToFavorites(vrScanObject);
+                  } else {
+                    setIsRegisterModelOpen(true);
+                  }
+                }}
+                disabled={isItemFavorited}
+              >
+                {!isItemFavorited ? 'Add' : 'ADDED'}
+              </Button>
+            ) : (
+              <CircularProgress />
+            )}
+          </div>
         </div>
       </div>
-      <div>{vrScanObject.manufacturerId}</div>
-      <div>{vrScanObject.fileName}</div>
-    </div>
+    </>
   );
 };
 

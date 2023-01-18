@@ -1,19 +1,30 @@
+import Box from '@mui/material/Box';
+import AppAccordion from 'modules/common/components/AppAccordion';
 import React from 'react';
 
 const FiltersComponent = ({ title, children }: { title: string; children?: any }) => {
   return (
-    <>
-      <h3>{title}</h3>
-      <div
-        style={{
-          height: '200px',
-          overflowY: 'scroll',
-          margin: '8px'
+    <AppAccordion
+      sx={{
+        margin: '8px',
+        background: 'rgb(253, 253, 255)',
+        boxShadow: 'none'
+      }}
+      title={title}
+    >
+      <Box
+        sx={{
+          margin: '8px',
+          overflow: 'hidden',
+          '&:hover': {
+            overflowY: 'scroll'
+          },
+          maxHeight: '170px'
         }}
       >
-        <div>{children && children}</div>
-      </div>
-    </>
+        {children && children}
+      </Box>
+    </AppAccordion>
   );
 };
 

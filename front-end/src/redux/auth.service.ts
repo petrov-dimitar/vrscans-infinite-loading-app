@@ -8,7 +8,8 @@ export const authApi = apiService.injectEndpoints({
         url: '/login',
         method: 'POST',
         body: credentials
-      })
+      }),
+      invalidatesTags: ['USER']
     }),
     register: builder.mutation({
       query: (credentials) => ({
@@ -21,7 +22,8 @@ export const authApi = apiService.injectEndpoints({
       query: () => ({
         url: '/user_by_token',
         method: 'GET'
-      })
+      }),
+      providesTags: ['USER']
     })
   })
 });
