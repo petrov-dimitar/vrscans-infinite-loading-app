@@ -41,7 +41,7 @@ const App = () => {
               <Route path="/favorites" element={<ProtectedRoute />}>
                 <Route path="/favorites" element={<FavoritesPage />} />
               </Route>
-              {/* <Route path="*" element={<Navigate to="/explore" replace />} /> */}
+              <Route path="*" element={<Navigate to="/explore" replace />} />
             </Routes>
           </Layout>
         </ThemeProvider>
