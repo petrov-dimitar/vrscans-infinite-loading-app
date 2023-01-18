@@ -24,14 +24,18 @@ const VrScanItem = ({ vrScanObject }: { vrScanObject: VrScan }) => {
   const [isRegisterModalOpen, setIsRegisterModelOpen] = useState(false);
   const [isSubscribedModalOpen, setIsSubscribedModelOpen] = useState(false);
 
-  const isItemFavorited =
-    selectedUser?.favorites?.filter((favItem) => favItem.id === vrScanObject.id).length > 0;
+  console.log('selectedUser', selectedUser);
+
+  const [isItemFavorited, setIsItemFavorited] = useState(
+    () => selectedUser?.favorites?.filter((favItem) => favItem.id === vrScanObject.id).length > 0
+  );
 
   const [addScanToFavorites, { isError, isSuccess, isLoading }] =
     useAddScanToUserFavoritesMutation();
   useEffect(() => {
     if (isSuccess) {
       toast.success('Successfully added scan to Favorties.');
+      setIsItemFavorited(true);
     }
   }, [isSuccess]);
 
@@ -40,6 +44,12 @@ const VrScanItem = ({ vrScanObject }: { vrScanObject: VrScan }) => {
       setIsSubscribedModelOpen(true);
     }
   }, [isError]);
+
+  useEffect(() => {
+    if (!selectedUser) {
+      setIsItemFavorited(false);
+    }
+  }, [selectedUser]);
 
   return (
     <>
@@ -101,11 +111,6 @@ const VrScanItem = ({ vrScanObject }: { vrScanObject: VrScan }) => {
                     setIsRegisterModelOpen(true);
                   }
                 }}
-                // sx={{
-                //   '&.Mui-disabled': {
-                //     : 'green'
-                //   }
-                // }}
                 disabled={isItemFavorited}
               >
                 {!isItemFavorited ? 'Add' : 'ADDED'}

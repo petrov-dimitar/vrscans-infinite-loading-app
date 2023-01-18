@@ -239,7 +239,18 @@ app.post(
 
     let subscription = null;
 
+    console.log("currentUser", !!currentUser.subscriptionId);
+
     if (currentUser.favorites.length > 3) {
+      if (!currentUser.subscriptionId) {
+        res.status(403).json({
+          status: "error",
+          message: "Please subscribe to add more than 5 scans to favorites",
+        });
+
+        res.end();
+        return next(new AppError("Please subbscribbe to add more.", 401));
+      }
       if (currentUser.subscriptionId) {
         subscription = await stripe.subscriptions.retrieve(
           currentUser.subscriptionId
@@ -248,16 +259,21 @@ app.post(
         if (!subscription.plan.active) {
           res.status(403).json({
             status: "error",
-            message: "Please subscribe to add more than 5 scans to favorites",
+            message: "Please activate your subscription",
           });
+
+          res.end();
+          return next(
+            new AppError(
+              "You are not logged in! Please log in to get access.",
+              401
+            )
+          );
         }
-      } else {
-        res.status(403).json({
-          status: "error",
-          message: "Please subscribe to add more than 5 scans to favorites",
-        });
       }
     }
+
+    console.log("add scan");
 
     // 2) Add VrScans to user from model
     const updatedUser = await UserModel.updateOne(currentUser, {

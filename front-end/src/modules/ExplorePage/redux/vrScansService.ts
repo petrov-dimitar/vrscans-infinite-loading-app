@@ -42,7 +42,7 @@ export const vrScansApi = apiService.injectEndpoints({
         method: 'POST',
         body: scan
       }),
-      invalidatesTags: ['FAVORITES', 'USER']
+      invalidatesTags: ['FAVORITES']
     })
   })
 });
