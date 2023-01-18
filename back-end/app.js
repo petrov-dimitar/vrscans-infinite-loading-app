@@ -16,7 +16,7 @@ app.use(cors());
 
 // app.use(express.static("public"));
 // app.use(express.urlencoded({ extended: true }));
-app.use("/webhook", express.json());
+app.use("/webhook", express.raw({ type: "application/json" }));
 
 // require("child_process").fork("seedVrScansScript.js"); //change the path depending on where the file is.
 
@@ -40,6 +40,13 @@ app.post(
   "/signup",
   jsonParser,
   catchAsync(async (req, res, next) => {
+    // Check if user still exists
+    const currentUser = await UserModel.find({ email: req.body.email });
+
+    if (currentUser.length > 0) {
+      return next(new AppError("User with this email already exists.", 401));
+    }
+
     const newUser = await UserModel.create(req.body);
 
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
