@@ -20,7 +20,7 @@ app.use("/webhook", express.json());
 
 // require("child_process").fork("seedVrScansScript.js"); //change the path depending on where the file is.
 
-dotenv.config({ path: "../../.env" });
+dotenv.config({ path: "../.env" });
 const jsonParser = bodyParser.json();
 
 console.log(dotenv.config);
