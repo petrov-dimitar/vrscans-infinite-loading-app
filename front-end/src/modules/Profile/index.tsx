@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { selectUser } from 'redux/auth.slice';
 import { useSelector } from 'react-redux';
@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import { ProductDisplay } from 'modules/Subscription/components/ProductDisplay';
 import { Box, Button, TextField, Toolbar, Typography } from '@mui/material';
 import { useUpdateUserMutation } from 'redux/auth.service';
+import Avatar from '@mui/material/Avatar';
 
 const ProfilePage = () => {
   const [success, setSuccess] = useState(false);
@@ -52,6 +53,7 @@ const ProfilePage = () => {
   const [emailValue, setEmailValue] = useState<any>(user?.email || '');
   const [firstNameValue, setFirstNameValue] = useState<any>(user?.firstName || '');
   const [lastNameValue, setLastNameValue] = useState<any>(user?.lastName || '');
+  const [newImage, setNewImage] = useState<any>();
 
   const onSubmitHandlerUpdateUser = (e) => {
     e.preventDefault();
@@ -73,6 +75,8 @@ const ProfilePage = () => {
     setLastNameValue(e.target.value);
   };
 
+  const inputImageRef = useRef();
+
   return (
     <>
       <Toolbar>
@@ -89,8 +93,33 @@ const ProfilePage = () => {
           encType="multipart/form-data"
           onSubmit={onSubmitHandlerUpdateUser}
         >
-          <input type="file" name="image" />
-          <img src={`${process.env.REACT_APP_API_URL}/image/${user?.photo}`} />
+          <input
+            ref={inputImageRef}
+            type="file"
+            name="image"
+            style={{
+              display: 'none'
+            }}
+            onChange={(e) => {
+              const objectUrl = URL.createObjectURL(e.target.files[0]);
+              setNewImage(objectUrl);
+            }}
+          />
+
+          <Box
+            sx={{
+              display: 'flex',
+              width: '100%',
+              justifyContent: 'center'
+            }}
+          >
+            <Avatar
+              src={newImage || `${process.env.REACT_APP_API_URL}/image/${user?.photo}`}
+              sx={{ width: 200, height: 200, cursor: 'pointer' }}
+              onClick={() => inputImageRef?.current?.click()}
+            />
+            )
+          </Box>
           <TextField
             fullWidth
             name="email"

@@ -25,7 +25,24 @@ export const ImageButton: React.FC<ImageButtonProps> = ({
       }}
       onClick={onClick}
     >
-      {icon || <img height={20} width={20} src={src} />}
+      {icon || (
+        <div
+          style={{
+            borderRadius: '50%'
+          }}
+        >
+          <img
+            style={{
+              display: 'block',
+              maxWidth: '30px',
+              maxHeight: '30px',
+              width: 'auto',
+              height: 'auto'
+            }}
+            src={src}
+          />
+        </div>
+      )}
       <span
         style={{
           color: textColor
