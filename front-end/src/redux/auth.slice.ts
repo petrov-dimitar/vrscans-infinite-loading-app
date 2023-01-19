@@ -11,6 +11,8 @@ interface User {
   password: string;
   photo: string;
   favorites: any[];
+  firstName: string;
+  lastName: string;
   subscriptionId: string;
   stripeCustomer: string;
   subscription?: any;

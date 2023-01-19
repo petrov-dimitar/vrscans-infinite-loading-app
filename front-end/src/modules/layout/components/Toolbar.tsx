@@ -14,6 +14,7 @@ import { useTheme } from '@mui/material/styles';
 import ExploreIcon from '@mui/icons-material/Explore';
 import VRIcon from 'assets/vr-headset-icon.svg';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
+import Avatar from '@mui/material/Avatar';
 
 export const Toolbar = () => {
   const selectedUser = useSelector((state: RootState) => state.auth.user);
@@ -121,14 +122,21 @@ export const Toolbar = () => {
               <Link to="/profile">
                 <ImageButton
                   icon={
-                    <AccountCircleIcon
-                      sx={{
-                        fill:
-                          currentPath && currentPath[0]?.pathname === '/profile'
-                            ? theme.palette.primary.main
-                            : 'black'
-                      }}
-                    />
+                    selectedUser.photo ? (
+                      <Avatar
+                        src={`${process.env.REACT_APP_API_URL}/image/${selectedUser?.photo}`}
+                        sx={{ width: 26, height: 26 }}
+                      />
+                    ) : (
+                      <AccountCircleIcon
+                        sx={{
+                          fill:
+                            currentPath && currentPath[0]?.pathname === '/profile'
+                              ? theme.palette.primary.main
+                              : 'black'
+                        }}
+                      />
+                    )
                   }
                   text={selectedUser.email}
                   textColor={

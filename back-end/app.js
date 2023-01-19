@@ -14,7 +14,8 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 
-// app.use(express.static("public"));
+app.use("/upload", express.static("public"));
+
 // app.use(express.urlencoded({ extended: true }));
 app.use("/webhook", express.raw({ type: "application/json" }));
 
@@ -34,6 +35,35 @@ mongoose.set("strictQuery", false);
 
 mongoose.connect(DB).then((con) => {
   console.log("DB Connection success");
+});
+
+// Image upload
+const fileUpload = require("express-fileupload");
+const { getUserByToken } = require("./utils/getUserByToken");
+const { uploadImage } = require("./utils/uploadImage");
+app.use(
+  fileUpload({
+    limits: {
+      fileSize: 10000000, // Around 10MB
+    },
+    abortOnLimit: true,
+  })
+);
+app.post("/upload", (req, res) => {
+  const { image } = req.files;
+
+  if (!image) return res.sendStatus(400);
+
+  image.mv(__dirname + "/upload/" + image.name);
+  res.status(200).json({
+    imageName: image.name,
+    imageUrl: "/upload/" + image.name,
+  });
+});
+
+app.get("/image/:name", function (req, res) {
+  const { name } = req.params;
+  res.sendFile(__dirname + "/upload/" + name);
 });
 
 app.post(
@@ -155,40 +185,44 @@ app.get("/vrscans", (req, res) => {
   });
 });
 
+app.put(
+  "/user",
+  express.static("public"),
+  catchAsync(async (req, res, next) => {
+    const { currentUser } = await getUserByToken(req);
+
+    const putObject = { ...req.body };
+
+    let photoURL = currentUser.photo;
+
+    if (req.files) {
+      const upload = uploadImage(req);
+      photoURL = upload.imageName;
+      putObject["photo"] = photoURL;
+    }
+
+    if (req.body.password) {
+      const password = await bcrypt.hash(req.body.password, 12);
+      putObject["password"] = password;
+    }
+
+    console.log("currentUser", currentUser);
+    const updatedUser = await UserModel.updateOne(currentUser, {
+      $set: { ...putObject },
+    });
+
+    res.status(200).json({
+      status: "success",
+      updatedUser,
+    });
+  })
+);
+
 app.get(
   "/user_by_token",
   jsonParser,
   catchAsync(async (req, res, next) => {
-    // 1) Identify user from token
-    let token;
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer")
-    ) {
-      token = req.headers.authorization.split(" ")[1];
-    } else if (req.cookies && req.cookies.jwt) {
-      token = req.cookies.jwt;
-    }
-
-    if (!token) {
-      return next(
-        new AppError("You are not logged in! Please log in to get access.", 401)
-      );
-    }
-
-    // Verification token
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
-    // Check if user still exists
-    const currentUser = await UserModel.findById(decoded.id);
-    if (!currentUser) {
-      return next(
-        new AppError(
-          "The user belonging to this token does no longer exist.",
-          401
-        )
-      );
-    }
+    const { currentUser, token } = await getUserByToken(req);
 
     let subscription = null;
     if (currentUser.subscriptionId) {
@@ -213,40 +247,9 @@ app.post(
   "/vrscans",
   jsonParser,
   catchAsync(async (req, res, next) => {
-    // 1) Identify user from token
-    let token;
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer")
-    ) {
-      token = req.headers.authorization.split(" ")[1];
-    } else if (req.cookies && req.cookies.jwt) {
-      token = req.cookies.jwt;
-    }
-
-    if (!token) {
-      return next(
-        new AppError("You are not logged in! Please log in to get access.", 401)
-      );
-    }
-
-    // Verification token
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
-    // Check if user still exists
-    const currentUser = await UserModel.findById(decoded.id);
-    if (!currentUser) {
-      return next(
-        new AppError(
-          "The user belonging to this token does no longer exist.",
-          401
-        )
-      );
-    }
+    const { currentUser, token } = await getUserByToken(req);
 
     let subscription = null;
-
-    console.log("currentUser", !!currentUser.subscriptionId);
 
     if (currentUser.favorites.length > 3) {
       if (!currentUser.subscriptionId) {
@@ -279,8 +282,6 @@ app.post(
         }
       }
     }
-
-    console.log("add scan");
 
     // 2) Add VrScans to user from model
     const updatedUser = await UserModel.updateOne(currentUser, {
@@ -322,38 +323,8 @@ app.get(
   "/user_favorites",
   jsonParser,
   catchAsync(async (req, res, next) => {
-    // 1) Identify user from token
-    let token;
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer")
-    ) {
-      token = req.headers.authorization.split(" ")[1];
-    } else if (req.cookies && req.cookies.jwt) {
-      token = req.cookies.jwt;
-    }
+    const { currentUser, token } = await getUserByToken(req);
 
-    if (!token) {
-      return next(
-        new AppError("You are not logged in! Please log in to get access.", 401)
-      );
-    }
-
-    // Verification token
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
-    // Check if user still exists
-    const currentUser = await UserModel.findById(decoded.id);
-    if (!currentUser) {
-      return next(
-        new AppError(
-          "The user belonging to this token does no longer exist.",
-          401
-        )
-      );
-    }
-
-    // 3) Return response
     res.status(200).json({
       status: "success",
       token,

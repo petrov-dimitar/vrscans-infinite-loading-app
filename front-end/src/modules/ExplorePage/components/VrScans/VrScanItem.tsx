@@ -24,8 +24,6 @@ const VrScanItem = ({ vrScanObject }: { vrScanObject: VrScan }) => {
   const [isRegisterModalOpen, setIsRegisterModelOpen] = useState(false);
   const [isSubscribedModalOpen, setIsSubscribedModelOpen] = useState(false);
 
-  console.log('selectedUser', selectedUser);
-
   const [isItemFavorited, setIsItemFavorited] = useState(
     () => selectedUser?.favorites?.filter((favItem) => favItem.id === vrScanObject.id).length > 0
   );

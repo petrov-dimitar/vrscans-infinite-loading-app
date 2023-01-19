@@ -15,9 +15,14 @@ const userSchema = new mongoose.Schema({
     required: [true, "please provide password"],
     select: false,
   },
+  firstName: {
+    type: String,
+  },
+  lastName: {
+    type: String,
+  },
   photo: {
     type: String,
-    default: "default.jpg",
   },
   stripeCustomer: {
     type: String,
