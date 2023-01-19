@@ -24,10 +24,23 @@ export const authApi = apiService.injectEndpoints({
         method: 'GET'
       }),
       providesTags: ['USER']
+    }),
+    updateUser: builder.mutation({
+      query: (body) => ({
+        url: '/user',
+        method: 'PUT',
+        body
+      }),
+      invalidatesTags: ['USER']
     })
   })
 });
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useLoginMutation, useRegisterMutation, useGetUserByTokenQuery } = authApi;
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useGetUserByTokenQuery,
+  useUpdateUserMutation
+} = authApi;

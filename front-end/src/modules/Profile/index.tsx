@@ -8,12 +8,13 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import CustomTreeView from 'modules/common/components/CustomTreeView';
 import { toast } from 'react-toastify';
 import { ProductDisplay } from 'modules/Subscription/components/ProductDisplay';
+import { Box, Button, TextField, Toolbar, Typography } from '@mui/material';
+import { useUpdateUserMutation } from 'redux/auth.service';
 
 const ProfilePage = () => {
   const [success, setSuccess] = useState(false);
   const user = useSelector(selectUser);
-
-  console.log('user', user);
+  const [updateUser, updateUserResponse] = useUpdateUserMutation();
 
   useEffect(() => {
     // Check to see if this is a redirect back from Checkout
@@ -33,9 +34,107 @@ const ProfilePage = () => {
     }
   }, [success]);
 
+  useEffect(() => {
+    setEmailValue(user?.email);
+    setFirstNameValue(user?.firstName);
+    setLastNameValue(user?.lastName);
+  }, [user]);
+
+  useEffect(() => {
+    if (updateUserResponse.isSuccess) {
+      toast.success('Successfully updated User');
+    }
+    if (updateUserResponse.isError) {
+      toast.success(updateUserResponse.error);
+    }
+  }, [updateUserResponse]);
+
+  const [emailValue, setEmailValue] = useState<any>(user?.email || '');
+  const [firstNameValue, setFirstNameValue] = useState<any>(user?.firstName || '');
+  const [lastNameValue, setLastNameValue] = useState<any>(user?.lastName || '');
+
+  const onSubmitHandlerUpdateUser = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+
+    // Call the Upload API
+    updateUser(formData);
+  };
+
+  const onEmailChange = (e) => {
+    setEmailValue(e.target.value);
+  };
+
+  const onFirstnameChange = (e) => {
+    setFirstNameValue(e.target.value);
+  };
+
+  const onLastNameChange = (e) => {
+    setLastNameValue(e.target.value);
+  };
+
   return (
     <>
-      <div>User Email: {user?.email}</div>
+      <Toolbar>
+        <Typography variant="h4">User Profile</Typography>
+      </Toolbar>
+      <Box
+        sx={{
+          padding: 4
+        }}
+      >
+        <form
+          action="/upload"
+          method="PUT"
+          encType="multipart/form-data"
+          onSubmit={onSubmitHandlerUpdateUser}
+        >
+          <input type="file" name="image" />
+          <img src={`${process.env.REACT_APP_API_URL}/image/${user?.photo}`} />
+          <TextField
+            fullWidth
+            name="email"
+            variant="standard"
+            value={emailValue || ''}
+            label="Email"
+            onChange={onEmailChange}
+            InputLabelProps={{ shrink: true }}
+            sx={{
+              marginBottom: 2
+            }}
+          />
+          <TextField
+            placeholder="First Name"
+            fullWidth
+            name="firstName"
+            variant="standard"
+            value={firstNameValue || ''}
+            label="First Name"
+            onChange={onFirstnameChange}
+            InputLabelProps={{ shrink: true }}
+            sx={{
+              marginBottom: 2
+            }}
+          />
+          <TextField
+            placeholder="Last Name"
+            fullWidth
+            name="lastName"
+            variant="standard"
+            value={lastNameValue || ''}
+            onChange={onLastNameChange}
+            label="Last Name"
+            InputLabelProps={{ shrink: true }}
+            sx={{
+              marginBottom: 2
+            }}
+          />
+
+          <Button type="submit" fullWidth variant="outlined">
+            Update
+          </Button>
+        </form>
+      </Box>
 
       <h5>Subscription</h5>
       {user?.subscriptionId ? (

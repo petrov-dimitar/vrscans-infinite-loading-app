@@ -195,10 +195,9 @@ app.put(
 
     let photoURL = currentUser.photo;
 
-    // Special Cases
     if (req.files) {
       const upload = uploadImage(req);
-      photoURL = upload.imageUrl;
+      photoURL = upload.imageName;
       putObject["photo"] = photoURL;
     }
 
