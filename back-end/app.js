@@ -15,6 +15,7 @@ const app = express();
 app.use(cors());
 
 app.use("/upload", express.static("public"));
+
 // app.use(express.urlencoded({ extended: true }));
 app.use("/webhook", express.raw({ type: "application/json" }));
 
@@ -39,6 +40,7 @@ mongoose.connect(DB).then((con) => {
 // Image upload
 const fileUpload = require("express-fileupload");
 const { getUserByToken } = require("./utils/getUserByToken");
+const { uploadImage } = require("./utils/uploadImage");
 app.use(
   fileUpload({
     limits: {
@@ -185,7 +187,36 @@ app.get("/vrscans", (req, res) => {
 
 app.put(
   "/user",
-  catchAsync(async (req, res, next) => {})
+  express.static("public"),
+  catchAsync(async (req, res, next) => {
+    const { currentUser } = await getUserByToken(req);
+
+    const putObject = { ...req.body };
+
+    let photoURL = currentUser.photo;
+
+    // Special Cases
+    if (req.files) {
+      const upload = uploadImage(req);
+      photoURL = upload.imageUrl;
+      putObject["photo"] = photoURL;
+    }
+
+    if (req.body.password) {
+      const password = await bcrypt.hash(req.body.password, 12);
+      putObject["password"] = password;
+    }
+
+    console.log("currentUser", currentUser);
+    const updatedUser = await UserModel.updateOne(currentUser, {
+      $set: { ...putObject },
+    });
+
+    res.status(200).json({
+      status: "success",
+      updatedUser,
+    });
+  })
 );
 
 app.get(
