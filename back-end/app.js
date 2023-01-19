@@ -38,6 +38,7 @@ mongoose.connect(DB).then((con) => {
 
 // Image upload
 const fileUpload = require("express-fileupload");
+const { getUserByToken } = require("./utils/getUserByToken");
 app.use(
   fileUpload({
     limits: {
@@ -50,9 +51,6 @@ app.post("/upload", (req, res) => {
   const { image } = req.files;
 
   if (!image) return res.sendStatus(400);
-
-  // If does not have image mime type prevent from uploading
-  // if (/^image/.test(image.mimetype)) return res.sendStatus(400);
 
   image.mv(__dirname + "/upload/" + image.name);
   res.status(200).json({
@@ -185,40 +183,16 @@ app.get("/vrscans", (req, res) => {
   });
 });
 
+app.put(
+  "/user",
+  catchAsync(async (req, res, next) => {})
+);
+
 app.get(
   "/user_by_token",
   jsonParser,
   catchAsync(async (req, res, next) => {
-    // 1) Identify user from token
-    let token;
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer")
-    ) {
-      token = req.headers.authorization.split(" ")[1];
-    } else if (req.cookies && req.cookies.jwt) {
-      token = req.cookies.jwt;
-    }
-
-    if (!token) {
-      return next(
-        new AppError("You are not logged in! Please log in to get access.", 401)
-      );
-    }
-
-    // Verification token
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
-    // Check if user still exists
-    const currentUser = await UserModel.findById(decoded.id);
-    if (!currentUser) {
-      return next(
-        new AppError(
-          "The user belonging to this token does no longer exist.",
-          401
-        )
-      );
-    }
+    const { currentUser, token } = await getUserByToken(req);
 
     let subscription = null;
     if (currentUser.subscriptionId) {
@@ -243,40 +217,9 @@ app.post(
   "/vrscans",
   jsonParser,
   catchAsync(async (req, res, next) => {
-    // 1) Identify user from token
-    let token;
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer")
-    ) {
-      token = req.headers.authorization.split(" ")[1];
-    } else if (req.cookies && req.cookies.jwt) {
-      token = req.cookies.jwt;
-    }
-
-    if (!token) {
-      return next(
-        new AppError("You are not logged in! Please log in to get access.", 401)
-      );
-    }
-
-    // Verification token
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
-    // Check if user still exists
-    const currentUser = await UserModel.findById(decoded.id);
-    if (!currentUser) {
-      return next(
-        new AppError(
-          "The user belonging to this token does no longer exist.",
-          401
-        )
-      );
-    }
+    const { currentUser, token } = await getUserByToken(req);
 
     let subscription = null;
-
-    console.log("currentUser", !!currentUser.subscriptionId);
 
     if (currentUser.favorites.length > 3) {
       if (!currentUser.subscriptionId) {
@@ -309,8 +252,6 @@ app.post(
         }
       }
     }
-
-    console.log("add scan");
 
     // 2) Add VrScans to user from model
     const updatedUser = await UserModel.updateOne(currentUser, {
@@ -352,38 +293,8 @@ app.get(
   "/user_favorites",
   jsonParser,
   catchAsync(async (req, res, next) => {
-    // 1) Identify user from token
-    let token;
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer")
-    ) {
-      token = req.headers.authorization.split(" ")[1];
-    } else if (req.cookies && req.cookies.jwt) {
-      token = req.cookies.jwt;
-    }
+    const { currentUser, token } = await getUserByToken(req);
 
-    if (!token) {
-      return next(
-        new AppError("You are not logged in! Please log in to get access.", 401)
-      );
-    }
-
-    // Verification token
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
-    // Check if user still exists
-    const currentUser = await UserModel.findById(decoded.id);
-    if (!currentUser) {
-      return next(
-        new AppError(
-          "The user belonging to this token does no longer exist.",
-          401
-        )
-      );
-    }
-
-    // 3) Return response
     res.status(200).json({
       status: "success",
       token,
